@@ -10,7 +10,11 @@ ssh -o StrictHostKeyChecking=no vagrant@192.168.50.100 -i ~/.ssh/rsa_key
 ssh -o StrictHostKeyChecking=no vagrant@192.168.50.101 -i ~/.ssh/rsa_key
 
 if [ $first == 1 ]; then
-ansible-playbook -i ~/Desktop/Project/venv/wpInstall/inventory.yml ~/Desktop/Project/venv/wpInstall/playbook.yml
+
+ansible-playbook -i python3Install/inventoryPy.yml python3Install/playbookPy.yml -e 'ansible_python_interpreter=/usr/bin/python2'
+
+ansible-playbook -i wpInstall/inventory.yml wpInstall/playbook.yml -e 'ansible_python_interpreter=/usr/bin/python3'
+
 else
-ansible-playbook -i /Users/mikolaj/Documents/gitHubInternship/venv/wpInstall/inventory.yml /Users/mikolaj/Documents/gitHubInternship/venv/wpInstall/playbook.yml
+ansible-playbook -i wpInstall/inventory.yml wpInstall/playbook.yml
 fi
