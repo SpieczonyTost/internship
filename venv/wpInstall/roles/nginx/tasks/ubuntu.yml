@@ -11,7 +11,7 @@
 
 - name: Install nginx
   ansible.builtin.package:
-    name: nginx=1.18.0-0ubuntu1.4 #XD HELP ME
+    name: nginx=1.18.0-0ubuntu1.4 
   when: "not 'nginx' in ansible_facts.ohai_packages"
   tags: [system]
 
