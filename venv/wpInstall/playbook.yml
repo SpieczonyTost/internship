@@ -1,18 +1,37 @@
-- hosts: virtualmachines
-  pre_tasks:
-    - name: python plsss
-      ansible.builtin.debug: 
-        msg: "NWO"
+# - hosts: virtualmachines
+#   pre_tasks:
+#     - name: python plsss
+#       ansible.builtin.debug: 
+#         msg: "NWO"
+#   become: true
+#   gather_facts: True
+#   vars_files:
+#     - vars/default.yml
+#   roles:
+#     - nginx
+#     - php
+#     - wordpress
+#     - mysql
+
+- name: playbook
+  
+  # pre_tasks: 
+  # - name: Install python3
+  #   ansible.builtin.yum:
+  #     name: python3-pip
+  #     update_cache: yes
+  #     state: latest
+
+  hosts: virtualmachines
   become: true
-  gather_facts: True
+  gather_facts: true
   vars_files:
-    - vars/default.yml
+    - vars/main.yaml
   roles:
+    - mysql
     - nginx
     - php
     - wordpress
-    - mysql
-
 
 # Specific modules only       MySQL, PHP, Nginx, Wordpress
 # System installation         System
