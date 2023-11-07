@@ -1,4 +1,6 @@
 #!/bin/bash
+vagrant up
+
 rm ~/.ssh/known_hosts
 rm ~/.ssh/known_hosts.old
 
