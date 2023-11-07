@@ -1,0 +1,6 @@
+- name: playbook
+  hosts: virtualmachines
+  become: true
+  gather_facts: true
+  roles:
+    - python3
