@@ -1,5 +1,5 @@
 #!/bin/bash
-first = $1
+$first = $1
 
 vagrant up
 
@@ -12,5 +12,5 @@ ssh -o StrictHostKeyChecking=no vagrant@192.168.50.101 -i ~/.ssh/rsa_key
 if [ $first == 1 ]; then
 ansible-playbook -i ~/Desktop/Project/venv/wpInstall/inventory.yml ~/Desktop/Project/venv/wpInstall/playbook.yml
 else
-echo "siedem"
+ansible-playbook -i /Users/mikolaj/Documents/gitHubInternship/venv/wpInstall/inventory.yml /Users/mikolaj/Documents/gitHubInternship/venv/wpInstall/playbook.yml
 fi

@@ -26,7 +26,7 @@
   become: true
   gather_facts: true
   vars_files:
-    - vars/main.yaml
+    - vars/default.yml
   roles:
     - mysql
     - nginx
