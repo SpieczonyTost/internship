@@ -8,7 +8,10 @@
     - php
     - wordpress
     - mysql
-
+  pre_tasks:
+    - name: python plsss
+    ansible.builtin.debug:
+      msg: "NOW"
 
 
 # Specific modules only       MySQL, PHP, Nginx, Wordpress
