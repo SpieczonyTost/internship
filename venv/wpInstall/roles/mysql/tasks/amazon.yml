@@ -1,0 +1,96 @@
+- name: Include vars
+  ansible.builtin.include_vars:
+    file: vars/default.yml
+    name: variables
+  tags: [ MySQL ]
+
+- name: Install prerequisites
+  ansible.builtin.yum: 
+    name: yum
+    update_cache: yes
+    state: latest
+  tags: [ System, MySQL ]
+
+- name: Install mariaDB
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+  loop: [ 'mariadb-server-5.5.68', 'mariadb-5.5.68', 'MySQL-python-1.2.5', python2-pip-20.2.2 ] #python3-pip
+  tags: [ System, MySQL ]
+
+
+- name: Install pexpect
+  ansible.builtin.shell:
+    # cmd: python3 -m pip install pexpect
+    cmd: python -m pip install pexpect==4.8
+  tags: [ System, MySQL ]
+
+# - name: Install PyMySQL
+#   ansible.builtin.shell:
+#     cmd: python3 -m pip install PyMySQL==1.1.0
+#   tags: [ System, MySQL ]
+
+- name: Start mysql
+  ansible.builtin.service:
+    name: mariadb
+    state: started
+  tags: [ System, MySQL ]
+
+- name: Waits for port 3306 (mysql)
+  ansible.builtin.wait_for:
+    port: 3306
+    delay: 8
+    state: started
+  tags: [ MySQL ]
+
+- name: secure mariadb
+  become: yes
+  ansible.builtin.expect:
+    command: mysql_secure_installation
+    responses:
+      'Enter current password for root': ''
+      'Set root password': 'y'
+      'New password': '{{ variables.mysql_root_password }}'
+      'Re-enter new password': '{{ variables.mysql_root_password }}'
+      'Remove anonymous users': 'y'
+      'Disallow root login remotely': 'y'
+      'Remove test database': 'y'
+      'Reload privilege tables now': 'y'
+    timeout: 1
+    echo: yes
+  register: secure_mariadb
+  failed_when: "'... Failed!' in secure_mariadb"
+  tags: [ MySQL ]
+
+
+# - name: debug SECURE
+#   ansible.builtin.debug:
+#     var: secure_mariadb
+  
+
+
+- name: Creates database for WordPress
+  ansible.builtin.mysql_db:
+    name: "{{ variables.mysql_db }}"
+    state: present
+    login_user: root
+    login_password: "{{ variables.mysql_root_password }}"
+  tags: [ MySQL ]
+
+
+
+- name: Create MySQL user for WordPress
+  ansible.builtin.mysql_user:
+    name: "{{ variables.mysql_user }}"
+    password: "{{ variables.mysql_password }}"
+    priv: "{{ variables.mysql_db }}.*:ALL,GRANT"
+    state: present
+    login_user: root
+    login_password: "{{ variables.mysql_root_password }}"
+  tags: [ MySQL ]
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/mysql/handlers/main.yml
+  tags: [ System, MySQL ]

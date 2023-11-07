@@ -1,0 +1,21 @@
+---
+- name: Get Active Directory Group Information
+  hosts: ise
+  vars_files:
+    - credentials.yml 
+  gather_facts: no
+  tasks:
+    - name: Get Active Directory Group By Name
+      cisco.ise.active_directory_groups_by_domain_info:
+        ise_hostname: "{{ise_host}}"
+        ise_username: "{{ise_username}}"
+        ise_password: "{{ise_password}}"
+        ise_verify: false
+        id: 37109d50-5814-11ee-9f78-f2b245013e94
+        additionalData:
+          - name: domain
+            value: ise.org
+          - name: filter
+            value: Backup Operators
+        ise_debug: true
+        ise_single_request_timeout: 300

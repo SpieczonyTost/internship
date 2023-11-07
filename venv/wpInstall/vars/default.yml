@@ -1,0 +1,18 @@
+#MySQL Settings
+mysql_root_password: "1234"
+mysql_db: "wordpress"
+mysql_user: "wordpressuser"
+mysql_password: "123"
+mysql_db_prefix: wp_
+
+
+#Wordpress Settings
+wp_url: "zrobione.com"
+wp_title: "amazon.com"
+wp_title1: "ubuntu.com"
+wp_admin: "admin"
+wp_password: "1234"
+wp_email: "zrobione.com@zdt.io"
+
+# nginx
+nginx_prerequisites: ['curl', 'gnupg2', 'ca-certificates', 'lsb-release', 'ubuntu-keyring' ]

@@ -1,0 +1,28 @@
+- name: Install prerequisites
+  ansible.builtin.yum: 
+    name: yum
+    update_cache: yes
+    state: latest
+  tags: [ System, Nginx ]
+
+- name: Creating nginx.repo
+  ansible.builtin.copy:
+    src: nginx.repo
+    dest: /etc/yum.repos.d/nginx.repo
+    owner: root
+    group: root
+    mode: 0644
+  tags: [ Nginx ]
+
+
+- name: Install nginx
+  ansible.builtin.yum:
+    name: nginx
+    update_cache: yes
+    state: latest
+  tags: [ System, Nginx ]
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/nginx/handlers/main.yml
+  tags: [ System, Nginx ]

@@ -1,0 +1,38 @@
+{
+ "collection_info": {
+  "namespace": "azure",
+  "name": "azcollection",
+  "version": "1.18.1",
+  "authors": [
+   "Microsoft <ansible@microsoft.com>"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "cloud",
+   "linux",
+   "networking",
+   "storage",
+   "security",
+   "database",
+   "application"
+  ],
+  "description": "The Azure collection.",
+  "license": [
+   "GPL-2.0-or-later"
+  ],
+  "license_file": null,
+  "dependencies": {},
+  "repository": "https://github.com/ansible-collections/azure",
+  "documentation": null,
+  "homepage": "https://azure.microsoft.com",
+  "issues": "https://github.com/ansible-collections/azure/issues"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "b6cb9acaaa7f1f1f699704ef1abb3ec91db9ccc2cc8c9454eb12ba707275b400",
+  "format": 1
+ },
+ "format": 1
+}

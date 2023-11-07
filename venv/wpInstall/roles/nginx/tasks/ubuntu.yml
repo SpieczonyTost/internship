@@ -1,0 +1,45 @@
+- name: Check if already installed
+  ansible.builtin.debug:
+    msg: "{{ ansible_facts.ohai_packages['nginx'] | length }} versions of nginx are installed!"
+  when: "'nginx' in ansible_facts.ohai_packages"
+  tags: [debug]
+
+- name: Update repositories
+  ansible.builtin.shell: apt-get update
+  when: "not 'nginx' in ansible_facts.ohai_packages"
+  tags: [system]
+
+- name: Install nginx
+  ansible.builtin.package:
+    name: nginx=1.18.0-0ubuntu1.4
+  when: "not 'nginx' in ansible_facts.ohai_packages"
+  tags: [system]
+
+- name: Overrite the default file
+  ansible.builtin.copy:
+    src: default
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: '0644'
+  when: "not 'nginx' in ansible_facts.ohai_packages"
+
+- name: Overrite the nginx.conf
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: '0644'
+  when: "not 'nginx' in ansible_facts.ohai_packages"
+
+- name: Restart nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted
+  when: "not 'nginx' in ansible_facts.ohai_packages"
+
+- name: Reload nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: reloaded

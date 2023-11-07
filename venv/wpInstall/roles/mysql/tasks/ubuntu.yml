@@ -1,0 +1,60 @@
+- name: Check if already installed
+  ansible.builtin.debug:
+    msg: "{{ ansible_facts.ohai_packages['mysql-server'] | length }} versions of mysql-server are installed!"
+    msg: "{{ansible_facts.ohai_packages}}"
+  when: "'mysql-server' in ansible_facts.ohai_packages"
+  tags: [debug]
+
+- name: Update repositories
+  ansible.builtin.apt:
+    update_cache: yes
+  when: "not 'mysql-server' in ansible_facts.ohai_packages"
+  tags: [system]
+
+- name: Install mysql-server
+  ansible.builtin.package:
+    name: "mysql-server=8.0.35-0ubuntu0.20.04.1"
+  when: "not 'mysql-server' in ansible_facts.ohai_packages"
+  tags: [system]
+
+- name: Activation magic
+  ansible.builtin.expect:
+    command: mysql_secure_installation
+    responses: 
+      'Press y|Y for Yes, any other key for No:': 'y'
+      'Please enter 0 = LOW, 1 = MEDIUM and 2 = STRONG:': '2'
+      'Remove anonymous users? (Press y|Y for Yes, any other key for No)': 'y'
+      'Disallow root login remotely? (Press y|Y for Yes, any other key for No) :': 'y'
+      'Remove test database and access to it? (Press y|Y for Yes, any other key for No) :': 'y'
+      'Reload privilege tables now? (Press y|Y for Yes, any other key for No) :': 'y'
+    timeout: 1
+  when: "not 'mysql-server' in ansible_facts.ohai_packages"
+
+- name: Install pip
+  ansible.builtin.package:
+    name: python3-pip=20.0.2-5ubuntu1.9
+  when: "not 'mysql-server' in ansible_facts.ohai_packages"
+  tags: [system]
+
+- name: Register the downloaded pip packages
+  community.general.pip_package_info:
+  register: p
+  tags: [debug]
+
+- name: Print pip packages
+  ansible.builtin.debug:
+    var: p.packages.pip
+  tags: [debug]
+
+- name: Install PyMySQL
+  ansible.builtin.pip:
+    name: PyMySQL==1.1.0
+  when: "not 'PyMySQL' in p.packages.pip"
+  tags: [system]
+
+- name: Set the root password
+  community.mysql.mysql_user:
+    name: root
+    password: "{{ mysql_root_password }}"
+    login_unix_socket: /run/mysqld/mysqld.sock
+  when: "not 'mysql-server' in ansible_facts.ohai_packages"

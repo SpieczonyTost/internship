@@ -1,0 +1,17 @@
+- name: Restart php-fpm
+  ansible.builtin.service:
+    name: php-fpm
+    state: restarted
+  tags: [ System ]
+
+- name: Restart php-fpm
+  ansible.builtin.service:
+    name: php-fpm
+    state: started
+  tags: [ System ]
+
+- name: Enable php-fpm
+  ansible.builtin.service:
+    name: php-fpm
+    enabled: yes
+  tags: [ System ]

@@ -1,0 +1,17 @@
+- name: Restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+  tags: [ System ]
+
+- name: Restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+  tags: [ System ]
+
+- name: Enable nginx
+  ansible.builtin.service:
+    name: nginx
+    enabled: true
+  tags: [ System ]
