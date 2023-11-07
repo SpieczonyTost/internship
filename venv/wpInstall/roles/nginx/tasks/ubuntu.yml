@@ -55,6 +55,18 @@
   register: sites_available_stat
   tags: [system]
 
+- name: Check if /etc/nginx/sites-enabled exists
+  stat:
+    path: /etc/nginx/sites-enabled
+  register: sites_enabled_stat
+  tags: [system]
+
+- name: Check if /etc/nginx/snippets exists
+  stat:
+    path: /etc/nginx/snippets
+  register: snippets_stat
+  tags: [system]
+
 - name: Create /etc/nginx/sites-available
   ansible.builtin.file:
     path: /etc/nginx/sites-available
@@ -63,6 +75,51 @@
     owner: root
     group: root
     mode: '0644'
+  when: "sites_available_stat.stat.exists == false"
+  tags: [system]
+
+- name: Create /etc/nginx/sites-enabled
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled
+    recurse: true
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+  when: "sites_enabled_stat.stat.exists == false"
+  tags: [system]
+
+- name: Create /etc/nginx/snippets
+  ansible.builtin.file:
+    path: /etc/nginx/snippets
+    recurse: true
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+  when: "snippets_stat.stat.exists == false"
+  tags: [system]
+
+- name: Overrite the fastcgi-php.conf
+  ansible.builtin.copy:
+    src: fastcgi-php.conf
+    dest: /etc/nginx/snippets/fastcgi-php.conf
+    owner: root
+    group: root
+    mode: '0644'
+  when: "sites_available_stat.stat.exists == false"
+
+- name: Overrite the fastcgi.conf
+  ansible.builtin.copy:
+    src: fastcgi.conf
+    dest: /etc/nginx/fastcgi.conf
+    owner: root
+    group: root
+    mode: '0644'
+  when: "sites_available_stat.stat.exists == false"
+
+- name: Create symlink
+  ansible.builtin.shell: "ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default"
   when: "sites_available_stat.stat.exists == false"
   tags: [system]
   
