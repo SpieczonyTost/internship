@@ -1,9 +1,3 @@
-- name: installing pthon
-  pre_tasks:
-    - name: python plsss
-    ansible.builtin.debug:
-      msg: "NOW"
-
 - name: Choosing Ubuntu
   ansible.builtin.import_tasks:
     file: ubuntu.yml
