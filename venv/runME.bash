@@ -1,5 +1,5 @@
 #!/bin/bash
-$first = $1
+first=$1
 
 vagrant up
 
