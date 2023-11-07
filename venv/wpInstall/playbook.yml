@@ -5,6 +5,10 @@
       msg: "NOW"
 
 - hosts: virtualmachines
+  pre_tasks:
+    - name: python plsss
+      ansible.builtin.debug:
+        msg: "NOW"
   become: true
   gather_facts: True
   vars_files:
