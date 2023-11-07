@@ -1,9 +1,3 @@
-- name: Include vars
-  ansible.builtin.include_vars:
-    file: vars/default.yml
-    name: variables
-  tags: [ MySQL ]
-
 - name: Install prerequisites
   ansible.builtin.yum: 
     name: yum
@@ -51,8 +45,8 @@
     responses:
       'Enter current password for root': ''
       'Set root password': 'y'
-      'New password': '{{ variables.mysql_root_password }}'
-      'Re-enter new password': '{{ variables.mysql_root_password }}'
+      'New password': '{{ mysql_root_password }}'
+      'Re-enter new password': '{{ mysql_root_password }}'
       'Remove anonymous users': 'y'
       'Disallow root login remotely': 'y'
       'Remove test database': 'y'
@@ -72,22 +66,22 @@
 
 - name: Creates database for WordPress
   ansible.builtin.mysql_db:
-    name: "{{ variables.mysql_db }}"
+    name: "{{ mysql_db }}"
     state: present
     login_user: root
-    login_password: "{{ variables.mysql_root_password }}"
+    login_password: "{{ mysql_root_password }}"
   tags: [ MySQL ]
 
 
 
 - name: Create MySQL user for WordPress
   ansible.builtin.mysql_user:
-    name: "{{ variables.mysql_user }}"
-    password: "{{ variables.mysql_password }}"
-    priv: "{{ variables.mysql_db }}.*:ALL,GRANT"
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_password }}"
+    priv: "{{ mysql_db }}.*:ALL,GRANT"
     state: present
     login_user: root
-    login_password: "{{ variables.mysql_root_password }}"
+    login_password: "{{ mysql_root_password }}"
   tags: [ MySQL ]
 
 - name: Include handlers
