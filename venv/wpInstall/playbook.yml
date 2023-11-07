@@ -1,8 +1,7 @@
 - hosts: virtualmachines
   pre_tasks:
     - name: python plsss
-      ansible.builtin.debug:
-        msg: "NOW"
+      ansible.builtin.debug: "NWO"
   become: true
   gather_facts: True
   vars_files:
