@@ -1,0 +1,33 @@
+- name: Install Wordpress
+  
+  pre_tasks: 
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+    tags: [always]
+    
+  - name: Print the package facts
+    ansible.builtin.debug:
+      var: ansible_facts.packages
+    tags: [debug]
+
+  hosts: allHosts
+  become: true
+  gather_facts: no
+  vars_files:
+    - vars/main.yaml
+  roles:
+    - role: fish
+      tags: fish
+
+    - role: php
+      tags: php
+
+    - role: nginx
+      tags: nginx
+
+    - role: mysql
+      tags: mysql
+
+    - role: wordpress
+      tags: wordpress      
