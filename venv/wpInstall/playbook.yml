@@ -4,17 +4,10 @@
   vars_files:
     - vars/default.yml
   roles:
-    - mysql
-
-- hosts: virtualmachines
-  become: true
-  gather_facts: True
-  vars_files:
-    - vars/default.yml
-  roles:
     - nginx
     - php
     - wordpress
+    - mysql
 
 
 
