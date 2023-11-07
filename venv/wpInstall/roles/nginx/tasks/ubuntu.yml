@@ -6,9 +6,9 @@
 
 - name: Check if file with repositories is present at /etc/apt/sources.list.d/nginx.list
   stat:
-    path: /etc/apt/sources.list.d/nginx.list
+    path: "/etc/apt/sources.list.d/nginx.list"
   register: nginx_list_stat
-  tag: [system]
+  tags: [system]
 
 - name: Insert file with repositories
   ansible.builtin.copy:
@@ -18,12 +18,12 @@
     group: root
     mode: '0644'
   when: "nginx_list_stat.stat.exists == false"
-  tag: [system]
+  tags: [system]
 
 - name: Add a key
   ansible.builtin.shell: "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62"
   when: "nginx_list_stat.stat.exists == false"
-  tag: [system]
+  tags: [system]
 
 - name: Update repositories
   ansible.builtin.shell: apt-get update
@@ -49,6 +49,23 @@
 #   when: "not 'nginx' in ansible_facts.ohai_packages" 
 #   tags: [system]
 
+- name: Check if /etc/nginx/sites-available exists
+  stat:
+    path: /etc/nginx/sites-available
+  register: sites_available_stat
+  tags: [system]
+
+- name: Create /etc/nginx/sites-available
+  ansible.builtin.file:
+    path: /etc/nginx/sites-available
+    recurse: true
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+  when: "sites_available_stat.stat.exists == false"
+  tags: [system]
+  
 - name: Overrite the default file
   ansible.builtin.copy:
     src: default

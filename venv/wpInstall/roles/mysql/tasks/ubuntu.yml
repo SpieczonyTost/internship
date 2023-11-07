@@ -1,7 +1,6 @@
 - name: Check if already installed
   ansible.builtin.debug:
     msg: "{{ ansible_facts.ohai_packages['mysql-server'] | length }} versions of mysql-server are installed!"
-    msg: "{{ansible_facts.ohai_packages}}"
   when: "'mysql-server' in ansible_facts.ohai_packages"
   tags: [debug]
 
