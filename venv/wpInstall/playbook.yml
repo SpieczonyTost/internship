@@ -1,5 +1,9 @@
 - hosts: virtualmachines
   become: true
+  pre_tasks:
+    - name: python plsss
+    ansible.builtin.debug:
+      msg: "NOW"
   gather_facts: True
   vars_files:
     - vars/default.yml
@@ -8,10 +12,6 @@
     - php
     - wordpress
     - mysql
-  pre_tasks:
-    - name: python plsss
-    ansible.builtin.debug:
-      msg: "NOW"
 
 
 # Specific modules only       MySQL, PHP, Nginx, Wordpress
