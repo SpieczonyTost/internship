@@ -1,9 +1,3 @@
-- name: installing pthon
-  pre_tasks:
-    - name: python plsss
-    ansible.builtin.debug:
-      msg: "NOW"
-
 - hosts: virtualmachines
   pre_tasks:
     - name: python plsss
