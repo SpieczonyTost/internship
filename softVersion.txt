@@ -1,18 +1,18 @@
 Controll node:
-ansible [core 2.15.5]               to samo
-jinja version = 3.1.2               to samo
-python version = 3.9.6              to samo
-pip version = pip 21.2.4            to samo
+ansible [core 2.15.5]               Both
+jinja version = 3.1.2               Both
+python version = 3.9.6              Both
+pip version = pip 21.2.4            Both
 
 VM's (client node):
-mysql-server=8.0.35-0ubuntu0.20.04.1    nie mam
-python3-pip=20.0.2-5ubuntu1.9           to samo
-python3=3.8.10                                              2.7
-PyMySQL==1.1.0                          w teori to samo
-nginx=1.18.0-0ubuntu1.4                                     1.24.0
-php-fpm=2:7.4+75                                            7.4.33
-php-mysql=2:7.4+75                                          7.4.33
-wordpress=latest                        to samo
+mysql-server=8.0.35-0ubuntu0.20.04.1    Not present on AmazonLinux
+python3-pip=20.0.2-5ubuntu1.9           Both                 AmazonLinux
+python3=3.8.10                                                  2.7
+PyMySQL==1.1.0                          Both
+nginx=1.24.0-1~focal                                            1.24.0
+php-fpm=2:7.4+75                                                7.4.33
+php-mysql=2:7.4+75                                              7.4.33
+wordpress=latest                        Both
 
 
 
