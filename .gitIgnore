@@ -1,2 +1,4 @@
+# Ignore virtual environment files
 venv
+# Ignore vagrant files
 .vagrant
