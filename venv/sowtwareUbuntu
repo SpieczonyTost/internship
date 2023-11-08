@@ -1,0 +1,7 @@
+mysql-server=8.0.35-0ubuntu0.20.04.1        8.0.35-0ubuntu0.20.04.1
+python3-pip=20.0.2-5ubuntu1.9               20.0.2-5ubuntu1.9
+PyMySQL==1.1.0                              1.1.0
+nginx=1.24.0-1~focal                        1.24.0-1~focal  
+php-fpm=2:7.4+75                            2:7.4+75
+php-mysql=2:7.4+75                          2:7.4+75
+python3                                     3.8.10
