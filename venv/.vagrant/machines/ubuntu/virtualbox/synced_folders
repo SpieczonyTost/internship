@@ -1,5 +1,0 @@
-<<<<<<< HEAD
-{"virtualbox":{"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/pawel/Desktop/Project/venv","disabled":false,"__vagrantfile":true}}}
-=======
-{"virtualbox":{"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/mikolaj/Documents/gitHubInternship/venv","disabled":false,"__vagrantfile":true}}}
->>>>>>> 2fc1c189 (nginx 1.24 for Unumbumtu :D)
