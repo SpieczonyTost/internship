@@ -1,26 +1,4 @@
-# - hosts: virtualmachines
-#   pre_tasks:
-#     - name: python plsss
-#       ansible.builtin.debug: 
-#         msg: "NWO"
-#   become: true
-#   gather_facts: True
-#   vars_files:
-#     - vars/default.yml
-#   roles:
-#     - nginx
-#     - php
-#     - wordpress
-#     - mysql
-
-- name: playbook
-  
-  # pre_tasks: 
-  # - name: Install python3
-  #   ansible.builtin.yum:
-  #     name: python3-pip
-  #     update_cache: yes
-  #     state: latest
+- name: Installation of wordpress
 
   hosts: virtualmachines
   become: true
@@ -32,6 +10,16 @@
     - nginx
     - php
     - wordpress
+
+- name: Installation of prometheus
+
+  hosts: observators
+  become: true
+  gather_facts: true
+  vars_files:
+    - vars/default.yml
+  roles:
+    - prometheus
 
 # Specific modules only       MySQL, PHP, Nginx, Wordpress
 # System installation         System
