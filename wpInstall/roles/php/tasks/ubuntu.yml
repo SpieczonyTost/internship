@@ -16,13 +16,13 @@
 
 - name: Install the right php-fpm package
   ansible.builtin.package: 
-    name: php-fpm
+    name: php-fpm=2:7.4+75
   when: "not 'php-fpm' in ansible_facts.ohai_packages"
   tags: [system]
 
 - name: Install the right php-mysql package
   ansible.builtin.package: 
-    name: php-mysql
+    name: php-mysql=2:7.4+75  
   when: "not 'php-mysql' in ansible_facts.ohai_packages"
   tags: [system]
 

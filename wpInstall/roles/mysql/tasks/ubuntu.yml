@@ -12,7 +12,7 @@
 
 - name: Install mysql-server
   ansible.builtin.package:
-    name: "mysql-server"
+    name: "mysql-server=8.0.35-0ubuntu0.20.04.1"
   when: "not 'mysql-server' in ansible_facts.ohai_packages"
   tags: [system]
 
@@ -31,7 +31,7 @@
 
 - name: Install pip
   ansible.builtin.package:
-    name: python3-pip
+    name: python3-pip=20.0.2-5ubuntu1.9
   when: "not 'mysql-server' in ansible_facts.ohai_packages"
   tags: [system]
 
@@ -47,7 +47,7 @@
 
 - name: Install PyMySQL
   ansible.builtin.pip:
-    name: PyMySQL
+    name: PyMySQL==1.1.0
   when: "not 'PyMySQL' in p.packages.pip"
   tags: [system]
 
