@@ -1,3 +1,100 @@
 - name: just checking
   ansible.builtin.debug:
     msg: "it is working for ubuntuProm"
+
+                                                                PROMETHEUS
+
+wget https://github.com/prometheus/prometheus/releases/download/v2.45.1/prometheus-2.45.1.linux-amd64.tar.gz
+tar xvfz prometheus-2.45.1.linux-amd64.tar.gz
+rm prometheus-2.45.1.linux-amd64.tar.gz 
+sudo useradd -MU prometheus
+sudo mkdir /opt/prometheus
+sudo mv prometheus-2.45.1.linux-amd64/* /opt/prometheus/
+rm -r prometheus-2.45.1.linux-amd64
+sudo chown prometheus:prometheus -R /opt/prometheus/
+
+touch /etc/systemd/system/prometheus.service
+
+[Unit]
+Description=Prometheus Server
+Documentation=https://prometheus.io/docs/introduction/overview/
+After=network-online.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Restart=on-failure
+ExecStart=/opt/prometheus/prometheus \
+  --config.file=/opt/prometheus/prometheus.yml \
+  --storage.tsdb.path=/opt/prometheus/data \
+  --storage.tsdb.retention.time=30d
+
+[Install]
+WantedBy=multi-user.target
+
+sudo systemctl daemon-reload &&
+sudo systemctl start prometheus.service &&
+sudo systemctl enable prometheus.service
+
+                                                                NODE EXPORTER
+
+wget https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz &&
+tar xvfz node_exporter-1.6.1.linux-amd64.tar.gz  &&
+rm node_exporter-1.6.1.linux-amd64.tar.gz &&
+sudo useradd -MU node_exporter &&
+sudo mkdir /opt/node_exporter &&
+sudo mv node_exporter-1.6.1.linux-amd64/* /opt/node_exporter/ &&
+rm -r node_exporter-1.6.1.linux-amd64 &&
+sudo chown node_exporter:node_exporter -R /opt/node_exporter/
+
+touch /etc/systemd/system/node_exporter.service
+
+[Unit]
+Description=Node Exporter
+Documentation=https://prometheus.io/docs/guides/node-exporter/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+Restart=on-failure
+ExecStart=/opt/node_exporter/node_exporter \
+  --web.listen-address=:9100
+
+[Install]
+WantedBy=multi-user.target
+
+sudo systemctl daemon-reload &&
+sudo systemctl start node_exporter.service &&
+sudo systemctl enable node_exporter.service
+
+node exportera daje na inne maszyny z ktorych chce informacje
+
+global:
+  scrape_interval:     15s # By default, scrape targets every 15 seconds.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds.
+
+  # Attach these extra labels to all timeseries collected by this Prometheus instance.
+  external_labels:
+    monitor: 'codelab-monitor'
+
+scrape_configs:
+  # - job_name: 'prometheus'
+
+  #   # Override the global default and scrape targets from this job every 5 seconds.
+  #   scrape_interval: 5s
+
+  #   static_configs:
+  #     - targets: ['localhost:9090']
+
+  - job_name:       'node'
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+
+    static_configs:
+      - targets: ['192.168.50.101:9100']
+        labels:
+          group: 'ubuntu'
