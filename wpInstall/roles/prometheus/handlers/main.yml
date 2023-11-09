@@ -1,0 +1,17 @@
+- name: Restart prometheus
+  ansible.builtin.service:
+    name: prometheus
+    state: restarted
+  tags: [ System ]
+
+- name: Restart prometheus
+  ansible.builtin.service:
+    name: prometheus
+    state: started
+  tags: [ System ]
+
+- name: Enable prometheus
+  ansible.builtin.service:
+    name: prometheus
+    enabled: true
+  tags: [ System ]

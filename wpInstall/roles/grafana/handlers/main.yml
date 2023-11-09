@@ -1,0 +1,17 @@
+- name: Restart grafana
+  ansible.builtin.service:
+    name: grafana-server
+    state: restarted
+  tags: [ System ]
+
+- name: Restart grafana
+  ansible.builtin.service:
+    name: grafana-server
+    state: started
+  tags: [ System ]
+
+- name: Enable grafana
+  ansible.builtin.service:
+    name: grafana-server
+    enabled: true
+  tags: [ System ]

@@ -1,0 +1,17 @@
+- name: Restart node_exporter
+  ansible.builtin.service:
+    name: node_exporter
+    state: restarted
+  tags: [ System ]
+
+- name: Restart node_exporter
+  ansible.builtin.service:
+    name: node_exporter
+    state: started
+  tags: [ System ]
+
+- name: Enable node_exporter
+  ansible.builtin.service:
+    name: node_exporter
+    enabled: true
+  tags: [ System ]

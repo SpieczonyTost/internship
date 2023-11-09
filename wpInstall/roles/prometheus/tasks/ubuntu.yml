@@ -2,99 +2,84 @@
   ansible.builtin.debug:
     msg: "it is working for ubuntuProm"
 
-                                                                PROMETHEUS
+- name: Add the user 'prometheus'
+  ansible.builtin.user:
+    name: prometheus
+  tags: [ Prometheus ]
 
-wget https://github.com/prometheus/prometheus/releases/download/v2.45.1/prometheus-2.45.1.linux-amd64.tar.gz
-tar xvfz prometheus-2.45.1.linux-amd64.tar.gz
-rm prometheus-2.45.1.linux-amd64.tar.gz 
-sudo useradd -MU prometheus
-sudo mkdir /opt/prometheus
-sudo mv prometheus-2.45.1.linux-amd64/* /opt/prometheus/
-rm -r prometheus-2.45.1.linux-amd64
-sudo chown prometheus:prometheus -R /opt/prometheus/
+- name: Create a directory for prometheus
+  ansible.builtin.file:
+    path: /opt/prometheus
+    state: directory
+    recurse: true
+    owner: prometheus
+    group: prometheus
+  tags: [ Prometheus ]
 
-touch /etc/systemd/system/prometheus.service
+- name: Downloading and extracting prometheus
+  ansible.builtin.unarchive:
+    src: https://github.com/prometheus/prometheus/releases/download/v2.45.1/prometheus-2.45.1.linux-amd64.tar.gz
+    dest: /opt/prometheus/
+    remote_src: true
+    owner: prometheus
+    group: prometheus
+    extra_opts: [--strip-components=1]
+  tags: [ Prometheus ]
 
-[Unit]
-Description=Prometheus Server
-Documentation=https://prometheus.io/docs/introduction/overview/
-After=network-online.target
+- name: Create daemon for prometheus
+  ansible.builtin.template:
+    src: prometheus.service.j2
+    dest: /etc/systemd/system/prometheus.service
+  tags: [ Prometheus ]
 
-[Service]
-User=prometheus
-Group=prometheus
-Restart=on-failure
-ExecStart=/opt/prometheus/prometheus \
-  --config.file=/opt/prometheus/prometheus.yml \
-  --storage.tsdb.path=/opt/prometheus/data \
-  --storage.tsdb.retention.time=30d
+- name: Create config file for prometheus
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: /opt/prometheus/prometheus.yml
+  tags: [ Prometheus ]
 
-[Install]
-WantedBy=multi-user.target
+- name: Create rules file for prometheus
+  ansible.builtin.template:
+    src: prometheus.rules.yml.j2
+    dest: /opt/prometheus/prometheus.rules.yml
+  tags: [ Prometheus ]
 
-sudo systemctl daemon-reload &&
-sudo systemctl start prometheus.service &&
-sudo systemctl enable prometheus.service
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/prometheus/handlers/main.yml
+  tags: [ System, Prometheus ]
 
-                                                                NODE EXPORTER
+#                                                                 PROMETHEUS
 
-wget https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz &&
-tar xvfz node_exporter-1.6.1.linux-amd64.tar.gz  &&
-rm node_exporter-1.6.1.linux-amd64.tar.gz &&
-sudo useradd -MU node_exporter &&
-sudo mkdir /opt/node_exporter &&
-sudo mv node_exporter-1.6.1.linux-amd64/* /opt/node_exporter/ &&
-rm -r node_exporter-1.6.1.linux-amd64 &&
-sudo chown node_exporter:node_exporter -R /opt/node_exporter/
+# wget https://github.com/prometheus/prometheus/releases/download/v2.45.1/prometheus-2.45.1.linux-amd64.tar.gz
+# tar xvfz prometheus-2.45.1.linux-amd64.tar.gz
+# rm prometheus-2.45.1.linux-amd64.tar.gz 
+# sudo useradd -MU prometheus
+# sudo mkdir /opt/prometheus
+# sudo mv prometheus-2.45.1.linux-amd64/* /opt/prometheus/
+# rm -r prometheus-2.45.1.linux-amd64
+# sudo chown prometheus:prometheus -R /opt/prometheus/
 
-touch /etc/systemd/system/node_exporter.service
+# touch /etc/systemd/system/prometheus.service
 
-[Unit]
-Description=Node Exporter
-Documentation=https://prometheus.io/docs/guides/node-exporter/
-Wants=network-online.target
-After=network-online.target
+# [Unit]
+# Description=Prometheus Server
+# Documentation=https://prometheus.io/docs/introduction/overview/
+# After=network-online.target
 
-[Service]
-User=node_exporter
-Group=node_exporter
-Type=simple
-Restart=on-failure
-ExecStart=/opt/node_exporter/node_exporter \
-  --web.listen-address=:9100
+# [Service]
+# User=prometheus
+# Group=prometheus
+# Restart=on-failure
+# ExecStart=/opt/prometheus/prometheus \
+#   --config.file=/opt/prometheus/prometheus.yml \
+#   --storage.tsdb.path=/opt/prometheus/data \
+#   --storage.tsdb.retention.time=30d
 
-[Install]
-WantedBy=multi-user.target
+# [Install]
+# WantedBy=multi-user.target
 
-sudo systemctl daemon-reload &&
-sudo systemctl start node_exporter.service &&
-sudo systemctl enable node_exporter.service
+# sudo systemctl daemon-reload &&
+# sudo systemctl start prometheus.service &&
+# sudo systemctl enable prometheus.service
 
-node exportera daje na inne maszyny z ktorych chce informacje
-
-global:
-  scrape_interval:     15s # By default, scrape targets every 15 seconds.
-  evaluation_interval: 15s # Evaluate rules every 15 seconds.
-
-  # Attach these extra labels to all timeseries collected by this Prometheus instance.
-  external_labels:
-    monitor: 'codelab-monitor'
-
-scrape_configs:
-  # - job_name: 'prometheus'
-
-  #   # Override the global default and scrape targets from this job every 5 seconds.
-  #   scrape_interval: 5s
-
-  #   static_configs:
-  #     - targets: ['localhost:9090']
-
-  - job_name:       'node'
-
-    # Override the global default and scrape targets from this job every 5 seconds.
-    scrape_interval: 5s
-
-    static_configs:
-      - targets: ['192.168.50.101:9100']
-        labels:
-          group: 'ubuntu'
