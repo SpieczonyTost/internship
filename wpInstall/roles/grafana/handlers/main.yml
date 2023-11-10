@@ -2,13 +2,13 @@
   ansible.builtin.systemd:
     daemon_reload: true
 
-- name: Enable service grafana_server and ensure it is not masked
+- name: Enable service grafana-server and ensure it is not masked
   ansible.builtin.systemd:
     name: grafana-server
     enabled: true
     masked: no
 
-- name: Reload service grafana_server, in all cases
+- name: Reload service grafana-server, in all cases
   ansible.builtin.systemd:
     name: grafana-server
     state: restarted
