@@ -1,3 +1,33 @@
 - name: just checking
   ansible.builtin.debug:
-    msg: "it is working for amazonProm"
+    msg: "yes i do work indeed"
+
+- name: Ensure group "node_exporter" exists
+  ansible.builtin.group:
+    name: node_exporter
+    state: present
+
+- name: Add user for node_exporter service
+  ansible.builtin.user:
+    create_home: false
+    name: node_exporter
+    group: node_exporter
+    shell: /bin/false
+
+- name: Unarchive the node_exporter folder
+  ansible.builtin.unarchive:
+    src: https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
+    dest: /etc
+    remote_src: yes
+
+- name: Copy the node_exporter.service file to /etc/systemd/system
+  ansible.builtin.copy:
+    src: node_exporter.service
+    dest: /etc/systemd/system/node_exporter.service
+    owner: node_exporter
+    group: node_exporter
+    mode: '0744'
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/node_exporter/handlers/main.yml

@@ -10,7 +10,7 @@
     - nginx
     - php
     - wordpress
-    - node-exporter
+    - node_exporter
 
 - name: Installation of prometheus
 

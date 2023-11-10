@@ -1,7 +1,7 @@
 virtualmachines:
   hosts:
-    # amazon:
-    #   ansible_host: 192.168.50.100
+    amazon:
+      ansible_host: 192.168.50.100
     ubuntu:
       ansible_host: 192.168.50.101
   vars:
@@ -11,8 +11,8 @@ virtualmachines:
 
 observators:
   hosts:
-    # amazonProm:
-    #   ansible_host: 192.168.50.102
+    amazonProm:
+      ansible_host: 192.168.50.102
     ubuntuProm:
       ansible_host: 192.168.50.103
   vars:

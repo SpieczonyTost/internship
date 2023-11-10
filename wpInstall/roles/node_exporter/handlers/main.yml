@@ -1,17 +1,14 @@
-- name: Restart node_exporter
-  ansible.builtin.service:
-    name: node_exporter
-    state: restarted
-  tags: [ System ]
+- name: Force systemd to reread configs
+  ansible.builtin.systemd:
+    daemon_reload: true
 
-- name: Restart node_exporter
-  ansible.builtin.service:
-    name: node_exporter
-    state: started
-  tags: [ System ]
-
-- name: Enable node_exporter
-  ansible.builtin.service:
-    name: node_exporter
+- name: Enable service node_exporter and ensure it is not masked
+  ansible.builtin.systemd:
+    name: node_exporter.service
     enabled: true
-  tags: [ System ]
+    masked: no
+
+- name: Reload service node_exporter, in all cases
+  ansible.builtin.systemd:
+    name: node_exporter.service
+    state: restarted
