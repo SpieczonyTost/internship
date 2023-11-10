@@ -1,0 +1,20 @@
+- name: Debug
+  ansible.builtin.debug:
+    msg: Me Me worky
+
+- name: Add the grafana repo file
+  ansible.builtin.copy:
+    src: grafana.repo
+    dest: /etc/yum.repos.d/grafana.repo
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Install grafana
+  ansible.builtin.yum:
+    name: grafana
+    state: present
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/grafana/handlers/main.yml
