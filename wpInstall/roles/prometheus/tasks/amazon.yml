@@ -36,10 +36,6 @@
     dest: /tmp
     remote_src: yes
 
-- name: Remove tar file
-  ansible.builtin.file:
-    path: /tmp/prometheus-2.45.1.linux-amd64.tar.gz
-    state: absent
 
 - name: Copy /tmp/consoles to /etc/prometheus/consoles
   ansible.builtin.copy:

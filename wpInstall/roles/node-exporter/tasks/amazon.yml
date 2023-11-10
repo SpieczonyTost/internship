@@ -1,0 +1,44 @@
+- name: just checking
+  ansible.builtin.debug:
+    msg: "yes i do work indeed"
+
+- name: Ensure group "node_exporter" exists
+  ansible.builtin.group:
+    name: node_exporter
+    state: present
+
+- name: Add user for node_exporter service
+  ansible.builtin.user:
+    create_home: false
+    name: node_exporter
+    group: node_exporter
+    shell: /bin/false
+
+- name: Unarchive the node_exporter folder
+  ansible.builtin.unarchive:
+    src: https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
+    dest: /etc
+    remote_src: yes
+
+- name: Copy the node-exporter.service file to /etc/systemd/system
+  ansible.builtin.copy:
+    src: node-exporter.service
+    dest: /etc/systemd/system/node-exporter.service
+    owner: node_exporter
+    group: node_exporter
+    mode: '0744'
+
+- name: Force systemd to reread configs
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Enable service node-exporter and ensure it is not masked
+  ansible.builtin.systemd:
+    name: node-exporter.service
+    enabled: true
+    masked: no
+
+- name: Reload service node-exporter, in all cases
+  ansible.builtin.systemd:
+    name: node-exporter.service
+    state: reloaded
