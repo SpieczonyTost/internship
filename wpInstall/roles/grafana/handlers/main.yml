@@ -4,7 +4,7 @@
     state: restarted
   tags: [ System ]
 
-- name: Restart grafana
+- name: Start grafana
   ansible.builtin.service:
     name: grafana-server
     state: started

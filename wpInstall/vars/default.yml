@@ -14,3 +14,12 @@ wp_title1: "ubuntu.com"
 wp_admin: "admin"
 wp_password: "1234"
 wp_email: "zrobione.com@zdt.io"
+
+
+ubuntu_grafana_url: "http://192.168.50.103:3000"
+grafana_user: "admin"
+grafana_password: "admin"
+org_id: "1"
+ds_name: "Prometheus"
+ds_type: "prometheus"
+ds_url: "http://localhost:9090"
