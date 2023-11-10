@@ -18,3 +18,43 @@
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/grafana/handlers/main.yml
+
+- name: Create a dashboard directory
+  ansible.builtin.file:
+    path: /etc/grafana/dashboards
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy the dashboard file
+  ansible.builtin.copy:
+    src: myDashboard.json
+    dest: /etc/grafana/dashboards/myDashboard.json
+    owner: root
+    group: root
+    mode: '0744'
+
+- name: Create prometheus datasource
+  community.grafana.grafana_datasource:
+    name: "{{amazon_ds_name}}"
+    url: "{{amazon_grafana_url}}"
+    ds_type: "{{amazon_ds_type}}"
+    ds_url: "{{amazon_ds_url}}"
+    org_id: "{{amazon_org_id}}"
+    grafana_user: "{{amazon_grafana_user}}"
+    grafana_password: "{{amazon_grafana_password}}"
+    is_default: true
+    access: proxy
+    tls_skip_verify: true
+    uid: prometheusdatasource
+
+- name: Import Grafana dashboard 
+  community.grafana.grafana_dashboard:
+    url: "{{amazon_grafana_url}}"
+    grafana_user: "{{amazon_grafana_user}}"
+    grafana_password: "{{amazon_grafana_password}}"
+    state: present
+    commit_message: Updated by ansible
+    overwrite: yes
+    path: /etc/grafana/dashboards/myDashboard.json
