@@ -14,3 +14,12 @@ wp_title1: "ubuntu.com"
 wp_admin: "admin"
 wp_password: "1234"
 wp_email: "zrobione.com@zdt.io"
+
+# Granfana for AmazonLinux
+amazon_grafana_url: "http://192.168.50.102:3000"
+amazon_grafana_user: "admin"
+amazon_grafana_password: "admin"
+amazon_org_id: "1"
+amazon_ds_name: "Prometheus"
+amazon_ds_type: "prometheus"
+amazon_ds_url: "http://localhost:9090"

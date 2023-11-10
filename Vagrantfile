@@ -3,19 +3,19 @@
 
 boxes = [
    {
-       :name => "amazon",
+       :name => "amazoniWp",
        :eth1 => "192.168.50.100",
-       :mem => "1024",
-       :cpu => "1",
+       :mem => "2048",
+       :cpu => "2",
        :os => "gbailey/amzn2",
    },
-   {
-       :name => "ubuntu",
-       :eth1 => "192.168.50.101",
-       :mem => "1024",
-       :cpu => "1",
-       :os => "gusztavvargadr/ubuntu-server",
-   },
+   #{
+   #    :name => "ubuntu",
+   #    :eth1 => "192.168.50.101",
+   #    :mem => "1024",
+   #    :cpu => "1",
+   #    :os => "gusztavvargadr/ubuntu-server",
+   #},
    {
        :name => "amazonProm",
        :eth1 => "192.168.50.102",
@@ -23,13 +23,13 @@ boxes = [
        :cpu => "1",
        :os => "gbailey/amzn2",
    },
-   {
-       :name => "ubuntuProm",
-       :eth1 => "192.168.50.103",
-       :mem => "1024",
-       :cpu => "1",
-       :os => "gusztavvargadr/ubuntu-server",
-   },
+   #{
+   #    :name => "ubuntuProm",
+   #    :eth1 => "192.168.50.103",
+   #    :mem => "1024",
+   #    :cpu => "1",
+   #    :os => "gusztavvargadr/ubuntu-server",
+   #},
 ]
 
 # Lets check what kind of SSH key you have generated and upload it on vm

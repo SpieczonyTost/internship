@@ -19,7 +19,6 @@ scrape_configs:
       - targets: ['192.168.50.101:9100']
         labels:
           group: 'ubuntu'
-#    static_configs:
-#      - targets: ['192.168.50.100:9100']
-#        labels:
-#          group: 'amazon'
+      - targets: ['192.168.50.100:9100']
+        labels:
+          group: 'amazon'

@@ -10,6 +10,7 @@
     - nginx
     - php
     - wordpress
+    - node-exporter
 
 - name: Installation of prometheus
 
@@ -20,6 +21,7 @@
     - vars/default.yml
   roles:
     - prometheus
+    - grafana
 
 # Specific modules only       MySQL, PHP, Nginx, Wordpress
 # System installation         System
