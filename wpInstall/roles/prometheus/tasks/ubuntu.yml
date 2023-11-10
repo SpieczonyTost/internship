@@ -1,3 +1,85 @@
 - name: just checking
   ansible.builtin.debug:
     msg: "it is working for ubuntuProm"
+
+- name: Add the user 'prometheus'
+  ansible.builtin.user:
+    name: prometheus
+  tags: [ Prometheus ]
+
+- name: Create a directory for prometheus
+  ansible.builtin.file:
+    path: /opt/prometheus
+    state: directory
+    recurse: true
+    owner: prometheus
+    group: prometheus
+  tags: [ Prometheus ]
+
+- name: Downloading and extracting prometheus
+  ansible.builtin.unarchive:
+    src: https://github.com/prometheus/prometheus/releases/download/v2.45.1/prometheus-2.45.1.linux-amd64.tar.gz
+    dest: /opt/prometheus/
+    remote_src: true
+    owner: prometheus
+    group: prometheus
+    extra_opts: [--strip-components=1]
+  tags: [ Prometheus ]
+
+- name: Create daemon for prometheus
+  ansible.builtin.template:
+    src: prometheus.service.j2
+    dest: /etc/systemd/system/prometheus.service
+  tags: [ Prometheus ]
+
+- name: Create config file for prometheus
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: /opt/prometheus/prometheus.yml
+  tags: [ Prometheus ]
+
+- name: Create rules file for prometheus
+  ansible.builtin.template:
+    src: prometheus.rules.yml.j2
+    dest: /opt/prometheus/prometheus.rules.yml
+  tags: [ Prometheus ]
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/prometheus/handlers/main.yml
+  tags: [ System, Prometheus ]
+
+#                                                                 PROMETHEUS
+
+# wget https://github.com/prometheus/prometheus/releases/download/v2.45.1/prometheus-2.45.1.linux-amd64.tar.gz
+# tar xvfz prometheus-2.45.1.linux-amd64.tar.gz
+# rm prometheus-2.45.1.linux-amd64.tar.gz 
+# sudo useradd -MU prometheus
+# sudo mkdir /opt/prometheus
+# sudo mv prometheus-2.45.1.linux-amd64/* /opt/prometheus/
+# rm -r prometheus-2.45.1.linux-amd64
+# sudo chown prometheus:prometheus -R /opt/prometheus/
+
+# touch /etc/systemd/system/prometheus.service
+
+# [Unit]
+# Description=Prometheus Server
+# Documentation=https://prometheus.io/docs/introduction/overview/
+# After=network-online.target
+
+# [Service]
+# User=prometheus
+# Group=prometheus
+# Restart=on-failure
+# ExecStart=/opt/prometheus/prometheus \
+#   --config.file=/opt/prometheus/prometheus.yml \
+#   --storage.tsdb.path=/opt/prometheus/data \
+#   --storage.tsdb.retention.time=30d
+
+# [Install]
+# WantedBy=multi-user.target
+
+# sudo systemctl daemon-reload &&
+# sudo systemctl start prometheus.service &&
+# sudo systemctl enable prometheus.service
+

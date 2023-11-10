@@ -1,0 +1,85 @@
+- name: just checking
+  ansible.builtin.debug:
+    msg: "it is working for ubuntuProm"
+
+- name: Create a directory for grafana
+  ansible.builtin.file:
+    path: /opt/grafana
+    state: directory
+    recurse: true
+  tags: [ Grafana ]
+
+- name: Downloading grafana
+  ansible.builtin.get_url:
+    url: https://dl.grafana.com/oss/release/grafana_10.2.0_amd64.deb
+    dest: /opt/grafana/
+  tags: [ Grafana ]
+
+
+- name: Install grafana
+  ansible.builtin.apt:
+    deb: /opt/grafana/grafana_10.2.0_amd64.deb
+    
+# - name: Recursively remove directory
+#   ansible.builtin.file:
+#     path: /opt/grafana
+#     state: absent
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/grafana/handlers/main.yml
+  tags: [ System, Prometheus ]
+
+- name: Waits for port 3000 (grafana)
+  ansible.builtin.wait_for:
+    port: 3000
+    delay: 6
+    state: started
+
+- name: Create prometheus datasource
+  ansible.builtin.grafana_datasource:
+    name: "{{ ds_name }}"
+    grafana_url: "{{ ubuntu_grafana_url }}"
+    grafana_user: "{{ grafana_user }}"
+    grafana_password: "{{ grafana_password }}"
+    org_id: 1
+    ds_type: "{{ ds_type }}"
+    ds_url: "{{ ds_url }}"
+    state: present
+    access: proxy
+    tls_skip_verify: true
+    is_default: true
+    uid: prometheus_ds
+
+
+- name: Create dashboard file
+  ansible.builtin.template:
+    src: Specs.json.j2
+    dest: /opt/grafana/Specs.json
+
+- name: Import Grafana dashboard Specs
+  community.grafana.grafana_dashboard:
+    grafana_url: "{{ ubuntu_grafana_url }}"
+    grafana_user: "admin"
+    grafana_password: "admin"
+    state: present
+    commit_message: Updated by ansible
+    overwrite: yes
+    path: /opt/grafana/Specs.json
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/grafana/handlers/main.yml
+  tags: [ System, Prometheus ]
+
+#                                                                       GRAFANA
+# sudo apt-get install -y adduser libfontconfig1 musl &&
+# wget https://dl.grafana.com/oss/release/grafana_10.2.0_amd64.deb &&
+# sudo dpkg -i grafana_10.2.0_amd64.deb                                                                    
+
+# albo
+
+# sudo apt-get install grafana
+
+# sudo systemctl start grafana-server &&
+# sudo systemctl enable grafana-server
