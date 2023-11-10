@@ -1,16 +1,16 @@
-# - name: Installation of wordpress
+- name: Installation of wordpress
 
-#   hosts: virtualmachines
-#   become: true
-#   gather_facts: true
-#   vars_files:
-#     - vars/default.yml
-#   roles:
-#     - mysql
-#     - nginx
-#     - php
-#     - wordpress
-#     - node_exporter
+  hosts: virtualmachines
+  become: true
+  gather_facts: true
+  vars_files:
+    - vars/default.yml
+  roles:
+    - mysql
+    - nginx
+    - php
+    - wordpress
+    - node-exporter
 
 - name: Installation of prometheus
 
@@ -20,7 +20,7 @@
   vars_files:
     - vars/default.yml
   roles:
-    # - prometheus
+    - prometheus
     - grafana
 
 # Specific modules only       MySQL, PHP, Nginx, Wordpress

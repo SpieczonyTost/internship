@@ -2,11 +2,10 @@
   ansible.builtin.import_tasks:
     file: ubuntu.yml
   when: (ansible_facts['distribution'] == 'Ubuntu')
-  tags: [ Grafana ]
-
+  tags: [ Node-Exporter ]
 
 - name: Choosing Amazon
   ansible.builtin.import_tasks:
     file: amazon.yml
   when: (ansible_facts['distribution'] == 'Amazon')   
-  tags: [ Grafana ]
+  tags: [ Node-Exporter ]

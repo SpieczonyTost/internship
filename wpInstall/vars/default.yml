@@ -1,4 +1,4 @@
-#MySQL Settings
+# MySQL Settings
 mysql_root_password: "zaq1@WSXcde3$RFV"
 mysql_db: "wordpress"
 mysql_user: "wordpressuser"
@@ -6,7 +6,7 @@ mysql_password: "123"
 mysql_db_prefix: wp_
 
 
-#Wordpress Settings
+# Wordpress Settings
 wp_url: "192.168.50.100"
 wp_url1: "192.168.50.101"
 wp_title: "amazon.com"
@@ -15,7 +15,7 @@ wp_admin: "admin"
 wp_password: "1234"
 wp_email: "zrobione.com@zdt.io"
 
-
+# Grafana for Ubuntu
 ubuntu_grafana_url: "http://192.168.50.103:3000"
 grafana_user: "admin"
 grafana_password: "admin"
@@ -23,3 +23,12 @@ org_id: "1"
 ds_name: "Prometheus"
 ds_type: "prometheus"
 ds_url: "http://localhost:9090"
+
+# Granfana for AmazonLinux
+amazon_grafana_url: "http://192.168.50.102:3000"
+amazon_grafana_user: "admin"
+amazon_grafana_password: "admin"
+amazon_org_id: "1"
+amazon_ds_name: "Prometheus"
+amazon_ds_type: "prometheus"
+amazon_ds_url: "http://localhost:9090"
