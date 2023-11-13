@@ -1,0 +1,3 @@
+- name: just checking
+  ansible.builtin.debug:
+    msg: "yes i do work indeed"

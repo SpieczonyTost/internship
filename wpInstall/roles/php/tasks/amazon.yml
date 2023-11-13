@@ -3,35 +3,39 @@
     name: yum
     update_cache: yes
     state: latest
-  tags: [ System, PHP ]
 
+- name: List ansible packages
+  ansible.builtin.yum:
+    list: amazon-linux-extras
+  register: amazon_linux_extras
 
 - name: Install extras
   ansible.builtin.yum:
     name: amazon-linux-extras
     update_cache: yes
     state: latest
-  tags: [ System, PHP ]
-
+  when: "amazon_linux_extras.results == ''"
 
 - name: Enabling php7.4
   ansible.builtin.command:
     cmd: amazon-linux-extras enable php7.4
-  tags: [ System, PHP ]
 
 - name: Disabling php5.4
   ansible.builtin.command:
     cmd: amazon-linux-extras disable php5.4
-  tags: [ System, PHP ]
 
+- name: List ansible packages
+  ansible.builtin.yum:
+    list: php
+  register: php
 
 - name: Install php
   ansible.builtin.yum:
     name: "{{ item }}"
     update_cache: yes
     state: latest
-  loop: [ php-cli-7.4.33, php-pdo-7.4.33, php-fpm-7.4.33, php-json-7.4.33, php-mysqlnd-7.4.33, php-7.4.33 ]
-  tags: [ System, PHP ]
+  loop: [ php-cli-7.4.33, php-pdo-7.4.33, php-fpm-7.4.33, php-json-7.4.33, php-mysqlnd-7.4.33, php-7.4.33, php-gd-7.4.33 ]
+  when: "php.results == ''"
 
 - name: Changing www.conf
   ansible.builtin.copy:
@@ -40,8 +44,6 @@
     owner: root
     group: root
     mode: 0644
-  tags: [ System, PHP ]
-
 
 - name: Changing default.conf
   ansible.builtin.copy:
@@ -50,36 +52,23 @@
     owner: root
     group: root
     mode: 0644
-  tags: [ System, PHP ]
 
 - name: Start php-fpm
   ansible.builtin.service:
     name: php-fpm
     state: started
-  tags: [ System, PHP]
 
 - name: Changing rights
   ansible.builtin.file: 
     path: /usr/share/nginx/html/
     owner: nginx
     group: nginx
-  tags: [ System, PHP ]
-
-- name: Install php-gd
-  ansible.builtin.yum:
-    name: php-gd-7.4.33
-    update_cache: yes
-    state: latest
-  tags: [ System, PHP ]
-
 
 - name: Restart nginx
   ansible.builtin.service:
     name: nginx
     state: restarted
-  tags: [ System, PHP ]
 
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/php/handlers/main.yml
-  tags: [ System, PHP ]

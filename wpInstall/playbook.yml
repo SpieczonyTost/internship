@@ -12,6 +12,7 @@
     - wordpress
     - node_exporter
     - nginx_exporter
+    - fluentd
 
 - name: Installation of prometheus
 
@@ -24,5 +25,5 @@
     - prometheus
     - grafana
 
-# Specific modules only       MySQL, PHP, Nginx, Wordpress
-# System installation         System
+# Specific modules only       mysql, php, nginx, wordpress, prometheus, fluentd, grafana, nginx_exporter, node_exporter
+# Specific distro             ubuntu, amazon

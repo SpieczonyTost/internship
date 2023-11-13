@@ -5,12 +5,10 @@
   stat:
     path: /var/www/html/wp-config.php
   register: wp_config_stat
-  tags: [debug]
 
 - name: Stats of /var/www/html/wp-config.php
   ansible.builtin.debug:
     var: wp_config_stat
-  tags: [debug]
 
 - name: Create wordpress DB
   community.mysql.mysql_db: 
@@ -36,7 +34,6 @@
     path: /var/www/html
     state: absent
   when: "wp_config_stat.stat.exists == false"
-  tags: [system]
 
 - name: Create /var/www/html
   ansible.builtin.file:
@@ -47,7 +44,6 @@
     group: www-data
     mode: '0755'
   when: "wp_config_stat.stat.exists == false"
-  tags: [system]
 
 - name: Extract wordpress.tgz into /var/www/html
   ansible.builtin.unarchive:
@@ -72,7 +68,6 @@
     group: www-data
     mode: '0755'
   when: "wp_cli_stat.stat.exists == false"
-  tags: [system]
 
 - name: Create wp-config.php
   args: 

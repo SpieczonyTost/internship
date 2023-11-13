@@ -1,11 +1,6 @@
-- name: just checking
-  ansible.builtin.debug:
-    msg: "it is working for ubuntuProm"
-
 - name: Add the user 'node_exporter'
   ansible.builtin.user:
     name: node_exporter
-  tags: [ node_exporter ]
 
 - name: Create a directory for node_exporter
   ansible.builtin.file:
@@ -14,7 +9,11 @@
     recurse: true
     owner: node_exporter
     group: node_exporter
-  tags: [ node_exporter ]
+
+- name: Check if node_exporter is downloaded
+  ansible.builtin.shell:
+    cmd: "ls /opt/node_exporter"
+  register: node_exporter
 
 - name: Downloading and extracting node_exporter
   ansible.builtin.unarchive:
@@ -24,52 +23,13 @@
     owner: node_exporter
     group: node_exporter
     extra_opts: [--strip-components=1]
-  tags: [ node_exporter ]
+  when: "node_exporter.stdout == ''"
 
 - name: Create daemon for node_exporter
   ansible.builtin.template:
     src: node_exporter.service.j2
     dest: /etc/systemd/system/node_exporter.service
-  tags: [ node_exporter ]
 
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/node_exporter/handlers/main.yml
-  tags: [ System, node_exporter ]
-
-
-#                                                                 NODE EXPORTER
-
-# wget https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz &&
-# tar xvfz node_exporter-1.6.1.linux-amd64.tar.gz  &&
-# rm node_exporter-1.6.1.linux-amd64.tar.gz &&
-# sudo useradd -MU node_exporter &&
-# sudo mkdir /opt/node_exporter &&
-# sudo mv node_exporter-1.6.1.linux-amd64/* /opt/node_exporter/ &&
-# rm -r node_exporter-1.6.1.linux-amd64 &&
-# sudo chown node_exporter:node_exporter -R /opt/node_exporter/
-
-# touch /etc/systemd/system/node_exporter.service
-
-# [Unit]
-# Description=Node Exporter
-# Documentation=https://prometheus.io/docs/guides/node-exporter/
-# Wants=network-online.target
-# After=network-online.target
-
-# [Service]
-# User=node_exporter
-# Group=node_exporter
-# Type=simple
-# Restart=on-failure
-# ExecStart=/opt/node_exporter/node_exporter \
-#   --web.listen-address=:9100
-
-# [Install]
-# WantedBy=multi-user.target
-
-# sudo systemctl daemon-reload &&
-# sudo systemctl start node_exporter.service &&
-# sudo systemctl enable node_exporter.service
-
-# node exportera daje na inne maszyny z ktorych chce informacje

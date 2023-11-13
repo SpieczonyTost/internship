@@ -3,40 +3,66 @@
     name: yum
     update_cache: yes
     state: latest
-  tags: [ System, MySQL ]
+
+- name: List ansible packages
+  ansible.builtin.shell:
+    cmd: "yum list installed | grep mariadb-server"
+  register: mariadb
+
+- name: sdnjfnd
+  ansible.builtin.debug:
+    var: mariadb
 
 - name: Install mariaDB
   ansible.builtin.yum:
     name: "{{ item }}"
     update_cache: yes
     state: latest
-  loop: [ 'mariadb-server-5.5.68', 'mariadb-5.5.68', python3-pip-20.2.2 ] #python3-pip 'MySQL-python-1.2.5'
-  tags: [ System, MySQL ]
+  loop: [ 'mariadb-server-5.5.68', 'mariadb-5.5.68' ]
+  when: "mariadb.stdout == ''"
 
+- name: List ansible packages
+  ansible.builtin.yum:
+    list: python3
+  register: python3
+
+- name: Install python3-pip
+  ansible.builtin.yum:
+    name: python3-pip-20.2.2 
+    update_cache: yes
+    state: latest
+  when: "python3.results == ''"
+
+- name: List ansible packages
+  ansible.builtin.yum:
+    list: pexpect
+  register: pexpect
 
 - name: Install pexpect
   ansible.builtin.shell:
     cmd: python3 -m pip install pexpect
-    # cmd: python -m pip install pexpect==4.8
-  tags: [ System, MySQL ]
+  when: "pexpect.results == ''"
+
+- name: List ansible packages
+  ansible.builtin.yum:
+    list: PyMySQL
+  register: PyMySQL
 
 - name: Install PyMySQL
   ansible.builtin.shell:
     cmd: python3 -m pip install PyMySQL==1.1.0
-  tags: [ System, MySQL ]
+  when: "PyMySQL.results == ''"
 
 - name: Start mysql
   ansible.builtin.service:
     name: mariadb
     state: started
-  tags: [ System, MySQL ]
 
 - name: Waits for port 3306 (mysql)
   ansible.builtin.wait_for:
     port: 3306
     delay: 8
     state: started
-  tags: [ MySQL ]
 
 - name: secure mariadb
   become: yes
@@ -55,24 +81,13 @@
     echo: yes
   register: secure_mariadb
   failed_when: "'... Failed!' in secure_mariadb"
-  tags: [ MySQL ]
-
-
-# - name: debug SECURE
-#   ansible.builtin.debug:
-#     var: secure_mariadb
   
-
-
 - name: Creates database for WordPress
   ansible.builtin.mysql_db:
     name: "{{ mysql_db }}"
     state: present
     login_user: root
     login_password: "{{ mysql_root_password }}"
-  tags: [ MySQL ]
-
-
 
 - name: Create MySQL user for WordPress
   ansible.builtin.mysql_user:
@@ -82,9 +97,7 @@
     state: present
     login_user: root
     login_password: "{{ mysql_root_password }}"
-  tags: [ MySQL ]
 
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/mysql/handlers/main.yml
-  tags: [ System, MySQL ]

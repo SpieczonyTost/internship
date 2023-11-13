@@ -1,3 +1,8 @@
+- name: Checking if wordpress was extracted
+  ansible.builtin.shell:
+    cmd: "ls /usr/share/nginx/html/wp-mail.php"
+  register: wordpress_tar
+
 - name: Extract wordpress arch
   ansible.builtin.unarchive:
     src: http://wordpress.org/latest.tar.gz
@@ -6,7 +11,7 @@
     owner: nginx
     group: nginx
     extra_opts: [--strip-components=1]
-  tags: [ Wordpress ]
+  when: "wordpress_tar != '/usr/share/nginx/html/wp-mail.php'"
 
 - name: Create a directory for wordpress
   ansible.builtin.file:
@@ -16,19 +21,22 @@
     owner: nginx
     group: nginx
     mode: 0644
-  tags: [ Wordpress ]
 
 - name: Copy file to host
   ansible.builtin.template:
     src: wp-config.php.j2
     dest: /usr/share/nginx/html/wp-config.php
-  tags: [ Wordpress ]
+
+- name: Checking if wordpressCli was extracted
+  ansible.builtin.shell:
+    cmd: "ls /tmp/"
+  register: wordpressCli
 
 - name: Download WP cli
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
     dest: /tmp/
-  tags: [ Wordpress ]
+  when: "wordpressCli != '/tmp/wp-cli.phar'"
 
 - name: Renaming and changing rights
   ansible.builtin.copy:
@@ -38,28 +46,18 @@
     owner: nginx
     group: nginx
     remote_src: true
-  tags: [ Wordpress ]
 
 - name: WP core installation
   ansible.builtin.command: "sudo -u nginx /usr/local/bin/wp core install --url={{ wp_url }} --title={{ wp_title }} --admin_name={{ wp_admin }} --admin_password={{ wp_password }} --admin_email={{ wp_email }}"
   args:
     chdir: "/usr/share/nginx/html/"
-  tags: [ Wordpress ]
 
 - name: Install WP plugins
   command: "sudo -u nginx /usr/local/bin/wp plugin install {{ item }} --activate"
   loop: [ calculated-fields-form ]
   args:
     chdir: "/usr/share/nginx/html/"
-  tags: [ Wordpress ]
-
-- name: Restart nginx
-  ansible.builtin.service:
-    name: nginx
-    state: restarted
-  tags: [ System, Wordpress ]
 
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/wordpress/handlers/main.yml
-  tags: [ System, Wordpress ]

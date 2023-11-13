@@ -2,13 +2,12 @@
   ansible.builtin.debug:
     msg: "{{ ansible_facts.ohai_packages['nginx'] | length }} versions of nginx are installed!"
   when: "'nginx' in ansible_facts.ohai_packages"
-  tags: [debug]
 
 - name: Check if file with repositories is present at /etc/apt/sources.list.d/nginx.list
   stat:
     path: "/etc/apt/sources.list.d/nginx.list"
   register: nginx_list_stat
-  tags: [system]
+
 
 - name: Insert file with repositories
   ansible.builtin.copy:
@@ -18,23 +17,19 @@
     group: root
     mode: '0644'
   when: "nginx_list_stat.stat.exists == false"
-  tags: [system]
 
 - name: Add a key
   ansible.builtin.shell: "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62"
   when: "nginx_list_stat.stat.exists == false"
-  tags: [system]
 
 - name: Update repositories
   ansible.builtin.shell: apt-get update
   when: "not 'nginx' in ansible_facts.ohai_packages"
-  tags: [system]
 
 - name: Install nginx
   ansible.builtin.package:
     name: nginx=1.24.0-1~focal 
   when: "not 'nginx' in ansible_facts.ohai_packages" 
-  tags: [system]
 
 # If installation of nginx fails comment these names ^^^ (and their contents) :
 # - Check if file with repositories is present at ...
@@ -47,25 +42,22 @@
 #   ansible.builtin.package:
 #     name: nginx=1.18.0-0ubuntu1.4 
 #   when: "not 'nginx' in ansible_facts.ohai_packages" 
-#   tags: [system]
+# 
 
 - name: Check if /etc/nginx/sites-available exists
   stat:
     path: /etc/nginx/sites-available
   register: sites_available_stat
-  tags: [system]
 
 - name: Check if /etc/nginx/sites-enabled exists
   stat:
     path: /etc/nginx/sites-enabled
   register: sites_enabled_stat
-  tags: [system]
 
 - name: Check if /etc/nginx/snippets exists
   stat:
     path: /etc/nginx/snippets
   register: snippets_stat
-  tags: [system]
 
 - name: Create /etc/nginx/sites-available
   ansible.builtin.file:
@@ -76,7 +68,6 @@
     group: root
     mode: '0644'
   when: "sites_available_stat.stat.exists == false"
-  tags: [system]
 
 - name: Create /etc/nginx/sites-enabled
   ansible.builtin.file:
@@ -87,7 +78,6 @@
     group: root
     mode: '0644'
   when: "sites_enabled_stat.stat.exists == false"
-  tags: [system]
 
 - name: Create /etc/nginx/snippets
   ansible.builtin.file:
@@ -98,7 +88,6 @@
     group: root
     mode: '0644'
   when: "snippets_stat.stat.exists == false"
-  tags: [system]
 
 - name: Overrite the fastcgi-php.conf
   ansible.builtin.copy:
@@ -121,8 +110,7 @@
 - name: Create symlink
   ansible.builtin.shell: "ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default"
   when: "sites_available_stat.stat.exists == false"
-  tags: [system]
-  
+
 - name: Overrite the default file
   ansible.builtin.copy:
     src: default

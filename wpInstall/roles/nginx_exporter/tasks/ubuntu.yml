@@ -2,7 +2,6 @@
   ansible.builtin.user:
     name: nginx_exporter
 
-
 - name: Create a directory for nginx_exporter
   ansible.builtin.file:
     path: /opt/nginx_exporter
@@ -11,18 +10,29 @@
     owner: nginx_exporter
     group: nginx_exporter
 
+- name: Check if nginx_exporter is downloaded
+  ansible.builtin.shell:
+    cmd: "ls /opt/nginx_exporter"
+  register: nginx_exporter
 
 - name: Downloading and extracting nginx_exporter
   ansible.builtin.get_url:
     url: https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v0.11.0/nginx-prometheus-exporter_0.11.0_linux_amd64.tar.gz
     dest: /opt/nginx_exporter/
+  when: "nginx_exporter.stdout != 'CHANGELOG.md\nLICENSE\nnginx-prometheus-exporter\nREADME.md'"
 
+- name: Check if nginx_exporter_tar is downloaded
+  ansible.builtin.shell:
+    cmd: "ls /opt/nginx_exporter"
+  register: nginx_exporter_tar
 
 - name: Unarchive a file that is already on the remote machine
   ansible.builtin.unarchive:
     src: /opt/nginx_exporter/nginx-prometheus-exporter_0.11.0_linux_amd64.tar.gz
     dest: /opt/nginx_exporter/
     remote_src: yes
+  when: "nginx_exporter_tar.stdout == 'nginx-prometheus-exporter_0.11.0_linux_amd64.tar.gz'"
+
 
 - name: Remove file .tar
   ansible.builtin.file:
@@ -34,96 +44,6 @@
     src: nginx_exporter.service.j2
     dest: /etc/systemd/system/nginx_exporter.service
 
-- name: Restart nginx
-  ansible.builtin.systemd:
-    name: nginx
-    state: restarted
-  when: "not 'nginx' in ansible_facts.ohai_packages"
-
-- name: Reload nginx
-  ansible.builtin.systemd:
-    name: nginx
-    state: reloaded
-
-- name: Start nginx_exporter
-  ansible.builtin.systemd:
-    name: nginx_exporter
-    state: starter
-  when: "not 'nginx' in ansible_facts.ohai_packages"
-
-- name: Enabele nginx_exporter
-  ansible.builtin.systemd:
-    name: nginx_exporter
-    enabled: true
-
-
-                                                  #FLUENTD
-# apt install build-essential ruby-dev
-# gem install fluentd --no-doc
-# gem install fluent-plugin-prometheus
-# mkdir /etc/fluent
-# nginx.conf
-#     log_format custom '$remote_addr - $remote_user [$time_local] '
-#     '"$request" $status $body_bytes_sent '
-#     '"$http_referer" "$http_user_agent" '
-#     '$upstream_response_time';
-
-#     access_log /var/log/nginx/access.log custom;
-
-
-# nano /etc/fluent/fluent.conf
-# <source>
-#     @type prometheus_tail_monitor
-# </source>
-
-# <source>
-#   @type prometheus
-# </source>
-
-# <source>
-#     @type tail
-#     <parse>
-#     @type regexp
-#     expression /^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] \"(?<method>\w+)(?:\s+(?<path>[^\"]*?)(?:\s+\S*)?)?\" (?<status_code>[^ ]*) (?<size>[^ ]*)(?:\s"(?<referer>[^\"]*)") "(?<agent>[^\"]*)" (?<urt>[^ ]*)$/
-#         time_format %d/%b/%Y:%H:%M:%S %z
-#         keep_time_key true
-#         types size:integer,reqtime:float,uct:float,uht:float,urt:float
-#     </parse>
-#     tag nginx
-#     path /var/log/nginx/access.log
-#     pos_file /tmp/fluent_nginx.pos
-# </source>
-# <filter nginx>
-#     @type prometheus
-
-#   <metric>
-#     name nginx_size_bytes_total
-#     type counter
-#     desc nginx bytes sent
-#     key size
-#   </metric>
-
-#   <metric>
-#     name nginx_request_status_code_total
-#     type counter
-#     desc nginx request status code
-#     <labels>
-#       method ${method}
-#       path ${path}
-#       status_code ${status_code}
-#     </labels>
-#   </metric>
-
-#   <metric>
-#     name nginx_http_request_duration_seconds
-#     type histogram
-#     desc Histogram of the total time spent on receiving the response from the upstream server.
-#     key urt
-#     <labels>
-#       method ${method}
-#       path ${path}
-#       status_code ${status_code}
-#     </labels>
-#   </metric>
-
-# </filter>
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/nginx_exporter/handlers/main.yml

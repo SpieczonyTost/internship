@@ -1,11 +1,4 @@
-- name: Reload nginx
-  service:
-    name: nginx
-    state: reloaded
-  tags: [ System ]
-
 - name: Restart nginx
   service:
     name: nginx
     state: restarted
-  tags: [ System ]
