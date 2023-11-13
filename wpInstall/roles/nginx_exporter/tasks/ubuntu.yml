@@ -1,0 +1,46 @@
+- name: Add the user 'nginx_exporter'
+  ansible.builtin.user:
+    name: nginx_exporter
+
+
+- name: Create a directory for nginx_exporter
+  ansible.builtin.file:
+    path: /opt/nginx_exporter
+    state: directory
+    recurse: true
+    owner: nginx_exporter
+    group: nginx_exporter
+
+
+- name: Downloading and extracting nginx_exporter
+  ansible.builtin.get_url:
+    url: https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v0.11.0/nginx-prometheus-exporter_0.11.0_linux_amd64.tar.gz
+    dest: /opt/nginx_exporter/
+
+
+- name: Unarchive a file that is already on the remote machine
+  ansible.builtin.unarchive:
+    src: /opt/nginx_exporter/nginx-prometheus-exporter_0.11.0_linux_amd64.tar.gz
+    dest: /opt/nginx_exporter/
+    remote_src: yes
+
+- name: Remove file .tar
+  ansible.builtin.file:
+    path: /opt/nginx_exporter/nginx-prometheus-exporter_0.11.0_linux_amd64.tar.gz
+    state: absent
+
+- name: Create daemon for nginx_exporter
+  ansible.builtin.template:
+    src: nginx_exporter.service.j2
+    dest: /etc/systemd/system/nginx_exporter.service
+
+- name: Restart nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted
+  when: "not 'nginx' in ansible_facts.ohai_packages"
+
+- name: Reload nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: reloaded
