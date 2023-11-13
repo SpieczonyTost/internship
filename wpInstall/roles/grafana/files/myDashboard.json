@@ -89,7 +89,7 @@
           "editorMode": "code",
           "expr": "nginx_connections_accepted",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -151,7 +151,7 @@
           "editorMode": "code",
           "expr": "nginx_connections_handled",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -213,7 +213,7 @@
           "editorMode": "code",
           "expr": "nginx_connections_active",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -275,7 +275,7 @@
           "editorMode": "code",
           "expr": "nginx_http_requests_total",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -337,7 +337,7 @@
           "editorMode": "code",
           "expr": "nginx_connections_waiting",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -399,7 +399,7 @@
           "editorMode": "code",
           "expr": "nginx_connections_writing",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -474,7 +474,7 @@
           "editorMode": "code",
           "expr": "node_filesystem_free_bytes{mountpoint='/'} / 1000000000",
           "instant": false,
-          "legendFormat": "{{job}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -536,7 +536,7 @@
           "editorMode": "code",
           "expr": "(time() - node_boot_time_seconds ) / 3600",
           "instant": false,
-          "legendFormat": "{{job}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -611,7 +611,7 @@
           "expr": "node_dmi_info",
           "hide": false,
           "instant": false,
-          "legendFormat": "{{job}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "B"
         }
@@ -683,7 +683,7 @@
           "editorMode": "code",
           "expr": "100 * (1 - ((avg_over_time(node_memory_MemFree_bytes[10m]) + avg_over_time(node_memory_Cached_bytes[10m]) + avg_over_time(node_memory_Buffers_bytes[10m])) / avg_over_time(node_memory_MemTotal_bytes[10m])))",
           "instant": false,
-          "legendFormat": "{{job}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -755,7 +755,7 @@
           "editorMode": "code",
           "expr": "(1 - avg(irate(node_cpu_seconds_total{mode=\"idle\"}[10m])) by (instance)) * 100",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
