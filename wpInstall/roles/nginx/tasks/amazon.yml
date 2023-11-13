@@ -14,8 +14,6 @@
     mode: 0644
   tags: [ Nginx ]
 
-#dflkslkfldksfkdsflkdsjl
-
 - name: Install nginx
   ansible.builtin.yum:
     name: nginx
