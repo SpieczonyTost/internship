@@ -57,9 +57,12 @@
   ansible.builtin.include_tasks:
     file: roles/nginx_exporter/handlers/amazon.yml
 
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/nginx/handlers/main.yml
+
 # somethig different, digging in logs
-# next ^^^finish
 # https://antonputra.com/monitoring/monitor-nginx-with-prometheus/#install-nginx-prometheus-exporter
-# check if all project works fine
 # fix all tags
 # run me bash with no prompt
+# change the ip's -- static == to template
