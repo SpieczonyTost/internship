@@ -1,0 +1,65 @@
+# Nginx-Prometheus-Exporter installation
+
+- name: Overrite the default.conf
+  ansible.builtin.copy:
+    src: default.conf
+    dest: /etc/nginx/conf.d/default.conf
+    owner: root
+    group: root
+    mode: '0744'
+  tags: [ System ]
+
+- name: Restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+  tags: [ System ]
+
+- name: Ensure group "nginx_exporter" exists
+  ansible.builtin.group:
+    name: nginx_exporter
+    state: present
+
+- name: Add user for nginx_exporter service
+  ansible.builtin.user:
+    create_home: false
+    name: nginx_exporter
+    group: nginx_exporter
+    shell: /bin/false
+
+- name: Create a folder
+  ansible.builtin.file:
+    path: /opt/nginx_exporter
+    recurse: true
+    state: directory
+    owner: nginx_exporter
+    group: nginx_exporter
+    mode: '0744'
+  tags: [ System ]
+
+- name: Get the tar file containing nginx-prometheus-exporter
+  ansible.builtin.unarchive:
+    src: https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v0.11.0/nginx-prometheus-exporter_0.11.0_linux_amd64.tar.gz
+    dest: /opt/nginx_exporter
+    owner: nginx_exporter
+    group: nginx_exporter
+    remote_src: yes
+
+- name: Copy nginx_exporter.service
+  ansible.builtin.copy:
+    src: nginx_exporter.service
+    dest: /etc/systemd/system/nginx_exporter.service
+    owner: nginx_exporter
+    group: nginx_exporter
+    mode: '0744'
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/nginx_exporter/handlers/amazon.yml
+
+# somethig different, digging in logs
+# next ^^^finish
+# https://antonputra.com/monitoring/monitor-nginx-with-prometheus/#install-nginx-prometheus-exporter
+# check if all project works fine
+# fix all tags
+# run me bash with no prompt
