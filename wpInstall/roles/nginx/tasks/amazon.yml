@@ -1,9 +1,8 @@
-- name: Install prerequisites
+- name: Update repositories
   ansible.builtin.yum: 
     name: yum
     update_cache: yes
     state: latest
-  tags: [ System, Nginx ]
 
 - name: Creating nginx.repo
   ansible.builtin.copy:
@@ -12,16 +11,19 @@
     owner: root
     group: root
     mode: 0644
-  tags: [ Nginx ]
+
+- name: List ansible packages
+  ansible.builtin.shell:
+    cmd: 'yum list install nginx | cut -d " " -f 1 | head -n 2'
+  register: nginx
 
 - name: Install nginx
   ansible.builtin.yum:
     name: nginx
     update_cache: yes
     state: latest
-  tags: [ System, Nginx ]
+  when: "nginx.stdout == 'Loaded\nAvailable'"
 
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/nginx/handlers/main.yml
-  tags: [ System, Nginx ]

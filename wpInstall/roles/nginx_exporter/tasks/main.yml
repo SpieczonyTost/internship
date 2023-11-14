@@ -2,10 +2,10 @@
   ansible.builtin.import_tasks:
     file: ubuntu.yml
   when: (ansible_facts['distribution'] == 'Ubuntu')
-  tags: [ Nginx-Exporter ]
+  tags: [ nginx_exporter, ubuntu ]
 
 - name: Choosing Amazon
   ansible.builtin.import_tasks:
     file: amazon.yml
-  when: (ansible_facts['distribution'] == 'Amazon')
-  tags: [ Nginx-Exporter ]
+  when: (ansible_facts['distribution'] == 'Amazon')   
+  tags: [ nginx_exporter, amazon ]

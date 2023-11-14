@@ -2,10 +2,10 @@
   ansible.builtin.import_tasks:
     file: ubuntu.yml
   when: (ansible_facts['distribution'] == 'Ubuntu')
-  tags: [ MySQL ]
+  tags: [ mysql, ubuntu ]
 
 - name: Choosing Amazon
   ansible.builtin.import_tasks:
     file: amazon.yml
-  when: (ansible_facts['distribution'] == 'Amazon')
-  tags: [ MySQL ]
+  when: (ansible_facts['distribution'] == 'Amazon')   
+  tags: [ mysql, amazon ]

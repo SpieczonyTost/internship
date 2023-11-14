@@ -2,10 +2,10 @@
   ansible.builtin.import_tasks:
     file: ubuntu.yml
   when: (ansible_facts['distribution'] == 'Ubuntu')
-  tags: [ PHP ]
+  tags: [ php, ubuntu ]
 
 - name: Choosing Amazon
   ansible.builtin.import_tasks:
     file: amazon.yml
-  when: (ansible_facts['distribution'] == 'Amazon')
-  tags: [ PHP ]
+  when: (ansible_facts['distribution'] == 'Amazon')   
+  tags: [ php, amazon ]

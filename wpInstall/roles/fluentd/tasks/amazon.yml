@@ -82,22 +82,3 @@
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/fluentd/handlers/main.yml
-
-
-
-# log digging
-
-
-
-# - name: Insert a config file
-#   ansible.builtin.copy:
-#     src: fluent.conf
-#     dest: /opt/fluent/lib/ruby/gems/3.2.0/gems/fluentd-1.16.2/fluent.conf
-#     owner: root
-#     group: root
-
-# - name: Start fluentd service
-#   ansible.builtin.include_tasks:
-#     file: roles/nginx_prometheus_exporter/handlers/amazonFluentd.yml
-    
-# /opt/fluent/lib/ruby/gems/3.2.0/gems/fluentd-1.16.2

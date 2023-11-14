@@ -12,7 +12,7 @@ Type=simple
 Restart=on-failure
 RestartSec=5s
 
-ExecStart=/opt/nginx-exporter/nginx-prometheus-exporter \
+ExecStart=/opt/nginx_exporter/nginx-prometheus-exporter \
     -nginx.scrape-uri=http://localhost:8080/status
 
 [Install]

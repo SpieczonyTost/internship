@@ -1,34 +1,37 @@
-- name: just checking
-  ansible.builtin.debug:
-    msg: "it is working for ubuntuProm"
-
 - name: Create a directory for grafana
   ansible.builtin.file:
     path: /opt/grafana
     state: directory
     recurse: true
-  tags: [ Grafana ]
+
+- name: Check if files for  grafana are installed
+  ansible.builtin.shell:
+    cmd: "ls /opt/grafana"
+  register: grafanaF
+
+- name: sadas
+  ansible.builtin.debug:
+    var: grafanaF
 
 - name: Downloading grafana
   ansible.builtin.get_url:
     url: https://dl.grafana.com/oss/release/grafana_10.2.0_amd64.deb
     dest: /opt/grafana/
-  tags: [ Grafana ]
+  when: "grafanaF.stdout == ''"
 
+- name: Check if grafana is installed
+  ansible.builtin.shell:
+    cmd: "apt list grafana"
+  register: grafana
 
 - name: Install grafana
   ansible.builtin.apt:
     deb: /opt/grafana/grafana_10.2.0_amd64.deb
-    
-# - name: Recursively remove directory
-#   ansible.builtin.file:
-#     path: /opt/grafana
-#     state: absent
+  when: "grafana.stdout != 'Listing...\ngrafana/now 10.2.0 amd64 [installed,local]'"
 
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/grafana/handlers/main.yml
-  tags: [ System, Prometheus ]
 
 - name: Waits for port 3000 (grafana)
   ansible.builtin.wait_for:
@@ -51,13 +54,29 @@
     is_default: true
     uid: prometheus_ds
 
+- name: Check if dashboard file is present
+  ansible.builtin.shell:
+    cmd: "ls /opt/grafana"
+  register: dashboard
 
 - name: Create dashboard file
-  ansible.builtin.template:
-    src: Specs.json.j2
-    dest: /opt/grafana/Specs.json
+  ansible.builtin.copy:
+    src: ubuntu_specs.json
+    dest: /opt/grafana/ubuntu_specs.json
+  when: "dashboard.stdout == 'grafana_10.2.0_amd64.deb'"
 
-- name: Import Grafana dashboard Specs
+- name: Create dashboard file
+  ansible.builtin.copy:
+    src: ubuntu_wp_dashboard.json
+    dest: /opt/grafana/ubuntu_wp_dashboard.json
+  when: "dashboard.stdout == 'grafana_10.2.0_amd64.deb'"
+
+- name: Check if dashboard file was created
+  ansible.builtin.shell:
+    cmd: "ls /opt/grafana"
+  register: dashboardCr
+
+- name: Import Grafana dashboard ubuntu_specs
   community.grafana.grafana_dashboard:
     grafana_url: "{{ ubuntu_grafana_url }}"
     grafana_user: "admin"
@@ -65,21 +84,20 @@
     state: present
     commit_message: Updated by ansible
     overwrite: yes
-    path: /opt/grafana/Specs.json
+    path: /opt/grafana/ubuntu_specs.json
+  when: "dashboardCr.stdout == 'grafana_10.2.0_amd64.deb\nubuntu_specs.json\nubuntu_wp_dashboard.json'"
+
+- name: Import Grafana dashboard ubuntu_wp_dashboard
+  community.grafana.grafana_dashboard:
+    grafana_url: "{{ ubuntu_grafana_url }}"
+    grafana_user: "admin"
+    grafana_password: "admin"
+    state: present
+    commit_message: Updated by ansible
+    overwrite: yes
+    path: /opt/grafana/ubuntu_wp_dashboard.json
+  when: "dashboardCr.stdout == 'grafana_10.2.0_amd64.deb\nubuntu_specs.json\nubuntu_wp_dashboard.json'"
 
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/grafana/handlers/main.yml
-  tags: [ System, Prometheus ]
-
-#                                                                       GRAFANA
-# sudo apt-get install -y adduser libfontconfig1 musl &&
-# wget https://dl.grafana.com/oss/release/grafana_10.2.0_amd64.deb &&
-# sudo dpkg -i grafana_10.2.0_amd64.deb                                                                    
-
-# albo
-
-# sudo apt-get install grafana
-
-# sudo systemctl start grafana-server &&
-# sudo systemctl enable grafana-server

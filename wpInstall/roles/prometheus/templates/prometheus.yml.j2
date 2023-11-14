@@ -16,7 +16,7 @@ scrape_configs:
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
     static_configs:
-      - targets: ['{{wp_url1}}:9100']
+      - targets: ['192.168.50.101:9100', '192.168.50.101:9113', '192.168.50.101:24231']
         labels:
           group: 'ubuntu'
       - targets: ['{{wp_url}}:9100','{{wp_url}}:9113','{{wp_url}}:24231']
