@@ -19,6 +19,6 @@ scrape_configs:
       - targets: ['192.168.50.101:9100', '192.168.50.101:9113', '192.168.50.101:24231']
         labels:
           group: 'ubuntu'
-      - targets: ['192.168.50.100:9100']
+      - targets: ['{{wp_url}}:9100','{{wp_url}}:9113','{{wp_url}}:24231']
         labels:
           group: 'amazon'

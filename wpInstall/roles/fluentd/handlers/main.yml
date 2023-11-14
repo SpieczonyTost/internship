@@ -8,7 +8,7 @@
     enabled: true
     masked: no
 
-- name: Reload service node_exporter, in all cases
+- name: Restart service node_exporter, in all cases
   ansible.builtin.systemd:
     name: fluentd.service
     state: restarted

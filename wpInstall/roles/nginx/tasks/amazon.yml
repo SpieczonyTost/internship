@@ -1,4 +1,4 @@
-- name: Install prerequisites
+- name: Update repositories
   ansible.builtin.yum: 
     name: yum
     update_cache: yes
