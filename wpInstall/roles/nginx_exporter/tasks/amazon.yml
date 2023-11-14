@@ -57,6 +57,14 @@
   ansible.builtin.include_tasks:
     file: roles/nginx_exporter/handlers/amazon.yml
 
+- name: Override the /etc/nginx/nginx.conf
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: '0644'
+
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/nginx/handlers/main.yml
