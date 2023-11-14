@@ -43,7 +43,6 @@ elsif  FileTest.exists?(dsa_key)
 end
 
 Vagrant.configure(2) do |config|
-
  boxes.each do |opts|
    config.vm.define opts[:name] do |config|
      config.vm.box = opts[:os]
