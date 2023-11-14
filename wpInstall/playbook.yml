@@ -12,6 +12,7 @@
     - wordpress
     - node_exporter
     - nginx_exporter
+    - fluentd
 
 - name: Installation of prometheus
 
