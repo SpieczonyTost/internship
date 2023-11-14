@@ -10,23 +10,23 @@
 
 - name: Check if fluentd is installed
   ansible.builtin.shell:
-    cmd: "gem list | grep fluentd"
+    cmd: "gem list luentd"
   register: fluentd
 
 - name: Install fluentd
   ansible.builtin.shell:
     cmd: "gem install fluentd --no-doc"
-  when: "fluentd.stdout_lines == ''"
+  when: "fluentd.stdout == ''"
 
 - name: Check if fluent-plugin is installed
   ansible.builtin.shell:
-    cmd: "gem list | grep fluent-"
+    cmd: "gem list fluent-plugin-prometheus"
   register: fluent
 
 - name: Install fluentd plugins
   ansible.builtin.shell:
     cmd: "gem install fluent-plugin-prometheus"
-  when: "fluent.stdout_lines == ''"
+  when: "fluent.stdout == ''"
 
 - name: Create a directory for fluentd
   ansible.builtin.file:

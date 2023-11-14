@@ -13,8 +13,8 @@
     mode: 0644
 
 - name: List ansible packages
-  ansible.builtin.yum:
-    list: nginx
+  ansible.builtin.shell:
+    cmd: 'yum list install nginx | cut -d " " -f 1 | head -n 2'
   register: nginx
 
 - name: Install nginx
@@ -22,7 +22,7 @@
     name: nginx
     update_cache: yes
     state: latest
-  when: "nginx.results == ''"
+  when: "nginx.stdout == 'Loaded\nAvailable'"
 
 - name: Include handlers
   ansible.builtin.include_tasks:

@@ -1,6 +1,6 @@
 - name: Checking if wordpress was extracted
   ansible.builtin.shell:
-    cmd: "ls /usr/share/nginx/html/wp-mail.php"
+    cmd: "ls /usr/share/nginx/html"
   register: wordpress_tar
 
 - name: Extract wordpress arch
@@ -11,7 +11,7 @@
     owner: nginx
     group: nginx
     extra_opts: [--strip-components=1]
-  when: "wordpress_tar != '/usr/share/nginx/html/wp-mail.php'"
+  when: "wordpress_tar.stdout == '50x.html\nindex.html'"
 
 - name: Create a directory for wordpress
   ansible.builtin.file:

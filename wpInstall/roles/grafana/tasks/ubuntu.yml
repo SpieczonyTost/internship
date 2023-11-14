@@ -9,11 +9,15 @@
     cmd: "ls /opt/grafana"
   register: grafanaF
 
+- name: sadas
+  ansible.builtin.debug:
+    var: grafanaF
+
 - name: Downloading grafana
   ansible.builtin.get_url:
     url: https://dl.grafana.com/oss/release/grafana_10.2.0_amd64.deb
     dest: /opt/grafana/
-  when: "grafanaF.stdout_lines == ''"
+  when: "grafanaF.stdout == ''"
 
 - name: Check if grafana is installed
   ansible.builtin.shell:
