@@ -1,4 +1,6 @@
 - name: playbook
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
   hosts: virtualmachines
   become: true
   gather_facts: true

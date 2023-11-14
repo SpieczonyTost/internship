@@ -5,6 +5,8 @@
   gather_facts: true
   vars_files:
     - vars/default.yml
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
   roles:
     - mysql
     - nginx
@@ -21,6 +23,8 @@
   gather_facts: true
   vars_files:
     - vars/default.yml
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
   roles:
     - prometheus
     - grafana
