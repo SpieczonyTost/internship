@@ -29,8 +29,8 @@
 
 - name: Copy the dashboard file
   ansible.builtin.copy:
-    src: myDashboard.json
-    dest: /etc/grafana/dashboards/myDashboard.json
+    src: amazon_wp_dashboard
+    dest: /etc/grafana/dashboards/amazon_wp_dashboard
     owner: root
     group: root
     mode: '0744'
@@ -57,4 +57,4 @@
     state: present
     commit_message: Updated by ansible
     overwrite: yes
-    path: /etc/grafana/dashboards/myDashboard.json
+    path: /etc/grafana/dashboards/amazon_wp_dashboard
