@@ -60,9 +60,15 @@
   register: dashboard
 
 - name: Create dashboard file
-  ansible.builtin.template:
-    src: Specs.json.j2
-    dest: /opt/grafana/Specs.json
+  ansible.builtin.copy:
+    src: ubuntu_specs.json
+    dest: /opt/grafana/ubuntu_specs.json
+  when: "dashboard.stdout == 'grafana_10.2.0_amd64.deb'"
+
+- name: Create dashboard file
+  ansible.builtin.copy:
+    src: ubuntu_wp_dashboard.json
+    dest: /opt/grafana/ubuntu_wp_dashboard.json
   when: "dashboard.stdout == 'grafana_10.2.0_amd64.deb'"
 
 - name: Check if dashboard file was created
@@ -70,7 +76,7 @@
     cmd: "ls /opt/grafana"
   register: dashboardCr
 
-- name: Import Grafana dashboard Specs
+- name: Import Grafana dashboard ubuntu_specs
   community.grafana.grafana_dashboard:
     grafana_url: "{{ ubuntu_grafana_url }}"
     grafana_user: "admin"
@@ -78,8 +84,19 @@
     state: present
     commit_message: Updated by ansible
     overwrite: yes
-    path: /opt/grafana/Specs.json
-  when: "dashboardCr.stdout == 'grafana_10.2.0_amd64.deb\nSpecs.json'"
+    path: /opt/grafana/ubuntu_specs.json
+  when: "dashboardCr.stdout == 'grafana_10.2.0_amd64.deb\nubuntu_specs.json\nubuntu_wp_dashboard.json'"
+
+- name: Import Grafana dashboard ubuntu_wp_dashboard
+  community.grafana.grafana_dashboard:
+    grafana_url: "{{ ubuntu_grafana_url }}"
+    grafana_user: "admin"
+    grafana_password: "admin"
+    state: present
+    commit_message: Updated by ansible
+    overwrite: yes
+    path: /opt/grafana/ubuntu_wp_dashboard.json
+  when: "dashboardCr.stdout == 'grafana_10.2.0_amd64.deb\nubuntu_specs.json\nubuntu_wp_dashboard.json'"
 
 - name: Include handlers
   ansible.builtin.include_tasks:

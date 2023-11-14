@@ -10,7 +10,7 @@
     @type tail
     <parse>
     @type regexp
-    expression /^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] \"(?<method>\w+)(?:\s+(?<path>[^\"]*?)(?:\s+\S*)?)?\" (?<status_code>[^ ]*) (?<size>[^ ]*)(?:\s"(?<referer>[^\"]*)") "(?<agent>[^\"]*)" (?<urt>[^ ]*)$/
+    expression /^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] \"(?<method>\w+)(?:\s+(?<path>[^\"]*?)(?:\s+\S*)?)?\" (?<status_code>[^ ]*) (?<size>[^ ]*)(?:\s"(?<referer>[^\"]*)") "(?<agent>[^\"]*)" (?<urt>[^ ]*) "(?<geoArea>[^ ]*)" "(?<geoCountry>[^\"]*)" "(?<geoContinent>[^ ]*)" $/
         time_format %d/%b/%Y:%H:%M:%S %z
         keep_time_key true
         types size:integer,reqtime:float,uct:float,uht:float,urt:float
@@ -34,6 +34,7 @@
     type counter
     desc nginx request status code
     <labels>
+      geoCountry ${geoCountry}
       ip_address ${remote}
       method ${method}
       path ${path}

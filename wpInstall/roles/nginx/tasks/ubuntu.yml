@@ -31,7 +31,7 @@
     name: nginx=1.24.0-1~focal 
   when: "not 'nginx' in ansible_facts.ohai_packages"
 
-  - name: Install nginx-geoip module
+- name: Install nginx-geoip module
   ansible.builtin.package:
     name: nginx-module-geoip
   when: "not 'nginx-module-geoip' in ansible_facts.ohai_packages"  
