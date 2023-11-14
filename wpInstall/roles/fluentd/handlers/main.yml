@@ -1,0 +1,17 @@
+- name: Start fluentd
+  ansible.builtin.service:
+    name: fluentd
+    state: started
+  tags: [ System ]
+
+- name: Restart fluentd
+  ansible.builtin.service:
+    name: fluentd
+    state: restarted
+  tags: [ System ]
+
+- name: Enable fluentd
+  ansible.builtin.service:
+    name: fluentd
+    enabled: yes
+  tags: [ System ]
