@@ -3,7 +3,7 @@
 
 boxes = [
    {
-       :name => "amazoniWp",
+       :name => "amazon",
        :eth1 => "192.168.50.100",
        :mem => "2048",
        :cpu => "2",
