@@ -1,6 +1,9 @@
 - name: Debug
   ansible.builtin.debug:
     msg: Me Me worky
+
+- name: Set the right timezone
+  ansible.builtin.shell: "sudo timedatectl set-timezone Europe/Warsaw"
     
 - name: Check if packages were collected successfully
   ansible.builtin.debug:
