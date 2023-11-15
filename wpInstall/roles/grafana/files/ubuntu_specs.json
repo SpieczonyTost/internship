@@ -645,9 +645,9 @@
     "list": [
       {
         "current": {
-          "selected": true,
-          "text": "node_memory_MemTotal_bytes{group=\"amazon\",instance=\"192.168.50.100:9100\",job=\"wpServers\"} 2076364800 1700031964000",
-          "value": "node_memory_MemTotal_bytes{group=\"amazon\",instance=\"192.168.50.100:9100\",job=\"wpServers\"} 2076364800 1700031964000"
+          "selected": false,
+          "text": "node_memory_MemTotal_bytes{group=\"amazon\",instance=\"192.168.50.100:9100\",job=\"wpServers\"} 2076364800 1700034561000",
+          "value": "node_memory_MemTotal_bytes{group=\"amazon\",instance=\"192.168.50.100:9100\",job=\"wpServers\"} 2076364800 1700034561000"
         },
         "datasource": {
           "type": "prometheus",
@@ -675,7 +675,7 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {

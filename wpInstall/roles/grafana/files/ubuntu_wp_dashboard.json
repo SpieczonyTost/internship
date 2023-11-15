@@ -88,6 +88,7 @@
       },
       "id": 3,
       "options": {
+        "minVizHeight": 75,
         "minVizWidth": 75,
         "orientation": "horizontal",
         "reduceOptions": {
@@ -614,7 +615,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},

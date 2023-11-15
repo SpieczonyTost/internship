@@ -15,16 +15,21 @@ php-mysql=2:7.4+75                                              7.4.33
 wordpress=latest                        Both
 
 
+                            UBUNTU
+node_exporter-1.6.1
+nginx-prometheus-exporter_0.11.0
+ruby 2.7.0p0 (2019-12-25 revision 647ee6f091) [x86_64-linux-gnu]
+gem 3.1.2
+fluentd-1.16.3
+prometheus-2.45.1
+grafana_10.2.0
 
 
-
-
-
-
-
-
-
-
-
-
-
+                            AMAZON
+node_exporter-1.6.1
+nginx-prometheus-exporter_0.11.0
+ruby 3.2.2 (2023-03-30 revision e51014f9c0) [x86_64-linux]
+gem 3.4.10
+fluent-package 5.0.1 fluentd 1.16.2 (d5685ada81ac89a35a79965f1e94bbe5952a5d3a)
+prometheus-2.45.1
+Version 10.2.1 (commit: 533a733e4eda44041e43358c5a51203e9b42c9ea, branch: HEAD)

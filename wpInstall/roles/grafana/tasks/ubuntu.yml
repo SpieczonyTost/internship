@@ -9,9 +9,9 @@
     cmd: "ls /opt/grafana"
   register: grafanaF
 
-- name: sadas
-  ansible.builtin.debug:
-    var: grafanaF
+# - name: sadas
+#   ansible.builtin.debug:
+#     var: grafanaF
 
 - name: Downloading grafana
   ansible.builtin.get_url:
