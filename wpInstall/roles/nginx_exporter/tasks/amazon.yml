@@ -27,6 +27,16 @@
     group: nginx_exporter
     shell: /bin/false
 
+- name: Check if /opt/nginx_exporter is present
+  ansible.builtin.stat:
+    path: /opt/nginx_exporter
+  register: directory
+
+- name: Check if when statements are correct
+  ansible.builtin.debug:
+   var: directory
+  when: "directory.stat.exists == true"
+
 - name: Create a folder
   ansible.builtin.file:
     path: /opt/nginx_exporter
@@ -36,11 +46,7 @@
     group: nginx_exporter
     mode: '0744'
   tags: [ System ]
-
-- name: Check if nginx_exporter was present before playbook
-  ansible.builtin.stat:
-    path: /opt/nginx_exporter
-  register: nginx_exporter
+  when: "directory.stat.exists == false"
 
 - name: Get the tar file containing nginx-prometheus-exporter
   ansible.builtin.unarchive:
@@ -49,7 +55,7 @@
     owner: nginx_exporter
     group: nginx_exporter
     remote_src: yes
-  when: "nginx_exporter.stat.exists == false"
+  when: "directory.stat.exists == false"
 
 - name: Copy nginx_exporter.service
   ansible.builtin.copy:
