@@ -1,7 +1,3 @@
-- name: just checking
-  ansible.builtin.debug:
-    msg: "it is working for amazonProm"
-
 - name: Ensure group "prometheus" exists
   ansible.builtin.group:
     name: prometheus
@@ -14,6 +10,11 @@
     group: prometheus
     shell: /bin/false
 
+- name: Check if directory was present
+  ansible.builtin.stat:
+    path: /etc/prometheus
+  register: directory
+
 - name: Create a prometheus directory
   ansible.builtin.file:
     path: /etc/prometheus
@@ -21,7 +22,13 @@
     owner: prometheus
     group: prometheus
     mode: '0755'
+  when: "directory.stat.exists == false"
   
+- name: Check if directory was present
+  ansible.builtin.stat:
+    path: /var/lib/prometheus
+  register: directoryLib
+
 - name: Create a prometheus lib directory
   ansible.builtin.file:
     path: /var/lib/prometheus
@@ -29,12 +36,14 @@
     owner: prometheus
     group: prometheus
     mode: '0755'
+  when: "directoryLib.stat.exists == false"
 
 - name: Unarchive the prometheus folder
   ansible.builtin.unarchive:
     src: https://github.com/prometheus/prometheus/releases/download/v2.45.1/prometheus-2.45.1.linux-amd64.tar.gz
     dest: /tmp
     remote_src: yes
+  when: "directory.stat.exists == false"
 
 
 - name: Copy /tmp/consoles to /etc/prometheus/consoles
@@ -45,6 +54,7 @@
     group: prometheus
     mode: '0744'
     remote_src: true
+  when: "directory.stat.exists == false"
 
 - name: Copy /tmp/console_libraries to /etc/prometheus/console_libraries
   ansible.builtin.copy:
@@ -54,6 +64,7 @@
     group: prometheus
     mode: '0744'
     remote_src: true
+  when: "directory.stat.exists == false"
 
 - name: Render the right prometheus.yml config file
   ansible.builtin.template:
