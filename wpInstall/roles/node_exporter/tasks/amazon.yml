@@ -14,11 +14,18 @@
     group: node_exporter
     shell: /bin/false
 
+- name: Check the /etc/node_exporter-1.6.1.linux-amd64 folder
+  ansible.builtin.stat:
+    path: /opt/node_exporter-1.6.1.linux-amd64 folder
+  register: node_exporter
+  ignore_errors: true
+
 - name: Unarchive the node_exporter folder
   ansible.builtin.unarchive:
     src: https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
     dest: /etc
     remote_src: yes
+  when: "node_exporter.stat.exists == false"
 
 - name: Copy the node_exporter.service file to /etc/systemd/system
   ansible.builtin.copy:

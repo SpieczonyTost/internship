@@ -37,6 +37,11 @@
     mode: '0744'
   tags: [ System ]
 
+- name: Check if nginx_exporter was present before playbook
+  ansible.builtin.stat:
+    path: /opt/nginx_exporter
+  register: nginx_exporter
+
 - name: Get the tar file containing nginx-prometheus-exporter
   ansible.builtin.unarchive:
     src: https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v0.11.0/nginx-prometheus-exporter_0.11.0_linux_amd64.tar.gz
@@ -44,6 +49,7 @@
     owner: nginx_exporter
     group: nginx_exporter
     remote_src: yes
+  when: "nginx_exporter.stat.exists == false"
 
 - name: Copy nginx_exporter.service
   ansible.builtin.copy:
@@ -68,9 +74,3 @@
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/nginx/handlers/main.yml
-
-# somethig different, digging in logs
-# https://antonputra.com/monitoring/monitor-nginx-with-prometheus/#install-nginx-prometheus-exporter
-# fix all tags
-# run me bash with no prompt
-# change the ip's -- static == to template

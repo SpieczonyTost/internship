@@ -2,6 +2,11 @@
   ansible.builtin.debug:
     msg: test msg for amazon in fluentd
 
+- name: List installed packages
+  ansible.builtin.shell:
+    cmd: 'yum list install fluentd | cut -d " " -f 1 | head -n 2'
+  register: fluentd
+
 - name: Set the right timezone
   ansible.builtin.shell: "sudo timedatectl set-timezone Europe/Warsaw"
 
@@ -60,6 +65,7 @@
 # now we can install Fluentd
 - name: Install Fluentd
   ansible.builtin.shell: "curl -fsSL https://toolbelt.treasuredata.com/sh/install-amazon2-fluent-package5-lts.sh | sh"
+  when: "fluentd.stdout == 'Loaded\nAvailable'"
 
 - name: Add the user 'fluentd' to the group 'adm'
   ansible.builtin.user:
@@ -78,6 +84,7 @@
 # now we add a gem package
 - name: Install a gem package
   ansible.builtin.shell: "/opt/fluent/bin/gem install fluent-plugin-prometheus"
+  when: "fluentd.stdout == 'Loaded\nAvailable'"
 
 - name: Include handlers
   ansible.builtin.include_tasks:

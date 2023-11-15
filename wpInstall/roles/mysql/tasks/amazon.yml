@@ -1,10 +1,10 @@
-- name: Install prerequisites
+- name: Update repositories
   ansible.builtin.yum: 
     name: yum
     update_cache: yes
     state: latest
 
-- name: List ansible packages
+- name: List installed packages
   ansible.builtin.shell:
     cmd: 'yum list install mariadb-server | cut -d " " -f 1 | head -n 2'
   register: mariadb

@@ -2,6 +2,16 @@
   ansible.builtin.debug:
     msg: Me Me worky
 
+- name: List installed packages
+  ansible.builtin.shell:
+    cmd: 'yum list install grafana | cut -d " " -f 1 | head -n 2'
+  register: grafana
+
+- name: Check if file /etc/yum.repos.d/grafana.repo exists
+  ansible.builtin.stat:
+    path: /etc/yum.repos.d/grafana.repo
+  register: grafana.repo
+
 - name: Add the grafana repo file
   ansible.builtin.copy:
     src: grafana.repo
@@ -9,11 +19,13 @@
     owner: root
     group: root
     mode: '0644'
+  when: "grafana.repo.stat.exists == false"
 
 - name: Install grafana
   ansible.builtin.yum:
     name: grafana
     state: present
+  when: "grafana.stdout == 'Loaded\nAvailable'"
 
 - name: Include handlers
   ansible.builtin.include_tasks:
@@ -48,6 +60,7 @@
     access: proxy
     tls_skip_verify: true
     uid: prometheusdatasource
+  when: "grafana.stdout == 'Loaded\nAvailable'"
 
 - name: Import Grafana dashboard 
   community.grafana.grafana_dashboard:
