@@ -30,6 +30,13 @@ boxes = [
       :cpu => "1",
       :os => "gusztavvargadr/ubuntu-server",
    },
+   {
+       :name => "amazonBak",
+       :eth1 => "192.168.50.104",
+       :mem => "1024",
+       :cpu => "1",
+       :os => "gbailey/amzn2",
+   },
 ]
 
 # Lets check what kind of SSH key you have generated and upload it on vm
