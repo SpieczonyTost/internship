@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 3,
+  "id": 1,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -32,7 +32,6 @@
           "color": {
             "mode": "thresholds"
           },
-          "displayName": "Up time in minutes:",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -57,7 +56,7 @@
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
-        "orientation": "auto",
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -80,7 +79,7 @@
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "Up time in minutes ( {{group}} ):",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -101,7 +100,7 @@
           },
           "fieldMinMax": false,
           "mappings": [],
-          "max": 995241984,
+          "max": 2147483648,
           "min": 0,
           "thresholds": {
             "mode": "percentage",
@@ -109,10 +108,6 @@
               {
                 "color": "dark-green",
                 "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 65
               },
               {
                 "color": "dark-orange",
@@ -130,7 +125,7 @@
       },
       "gridPos": {
         "h": 12,
-        "w": 13,
+        "w": 9,
         "x": 5,
         "y": 0
       },
@@ -147,7 +142,7 @@
           "values": false
         },
         "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "showThresholdMarkers": false
       },
       "pluginVersion": "10.2.0",
       "targets": [
@@ -157,13 +152,13 @@
             "uid": "prometheus_ds"
           },
           "disableTextWrap": false,
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes",
+          "editorMode": "builder",
+          "expr": "node_memory_Active_bytes",
           "fullMetaSearch": false,
+          "hide": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "In use memory",
+          "legendFormat": "Memory in use ( {{group}} )",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -174,15 +169,15 @@
             "uid": "prometheus_ds"
           },
           "disableTextWrap": false,
-          "editorMode": "code",
-          "expr": "node_memory_MemAvailable_bytes",
+          "editorMode": "builder",
+          "expr": "node_memory_MemTotal_bytes - node_memory_Active_bytes",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "Free memory",
+          "legendFormat": "Free memory ( {{group}} )",
           "range": true,
-          "refId": "C",
+          "refId": "B",
           "useBackend": false
         },
         {
@@ -191,13 +186,12 @@
             "uid": "prometheus_ds"
           },
           "editorMode": "code",
-          "exemplar": false,
           "expr": "node_memory_MemTotal_bytes",
           "hide": true,
-          "instant": true,
-          "legendFormat": "__auto",
-          "range": false,
-          "refId": "B"
+          "instant": false,
+          "legendFormat": "Total memory ( {{group}} )",
+          "range": true,
+          "refId": "C"
         }
       ],
       "title": "Memory usage",
@@ -216,7 +210,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "displayName": "CPU usage",
+          "displayName": "CPU usage ( amazon )",
           "fieldMinMax": false,
           "mappings": [],
           "thresholds": {
@@ -247,7 +241,7 @@
       "gridPos": {
         "h": 12,
         "w": 5,
-        "x": 18,
+        "x": 14,
         "y": 0
       },
       "id": 1,
@@ -275,15 +269,103 @@
             "uid": "prometheus_ds"
           },
           "disableTextWrap": false,
-          "editorMode": "code",
+          "editorMode": "builder",
           "exemplar": false,
-          "expr": "sum by(job) (rate(node_cpu_seconds_total{mode!=\"idle\"}[1m]))",
+          "expr": "sum by(job) (rate(node_cpu_seconds_total{mode!=\"idle\", group=\"amazon\"}[1m]))",
           "format": "time_series",
           "fullMetaSearch": false,
           "includeNullMetadata": false,
           "instant": false,
           "interval": "",
-          "legendFormat": "CPU usage",
+          "legendFormat": "CPU usage ( amazon )",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "CPU usage",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus_ds"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "displayName": "CPU usage ( ubuntu )",
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "dark-green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 50
+              },
+              {
+                "color": "semi-dark-orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 5,
+        "x": 19,
+        "y": 0
+      },
+      "id": 6,
+      "interval": "5s",
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus_ds"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "sum by(job) (rate(node_cpu_seconds_total{mode!=\"idle\", group=\"ubuntu\"}[1m]))",
+          "format": "time_series",
+          "fullMetaSearch": false,
+          "includeNullMetadata": false,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "CPU usage ( ubuntu )",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -304,13 +386,11 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": true,
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "axisSoftMax": 1073741824,
-            "axisSoftMin": 0,
             "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 0,
@@ -327,7 +407,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "auto",
+            "showPoints": "never",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -337,20 +417,28 @@
               "mode": "off"
             }
           },
+          "fieldMinMax": false,
           "mappings": [],
+          "max": 2147483648,
+          "min": 0,
           "thresholds": {
-            "mode": "absolute",
+            "mode": "percentage",
             "steps": [
               {
-                "color": "green",
+                "color": "dark-green",
                 "value": null
               },
               {
-                "color": "red",
+                "color": "dark-orange",
                 "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
               }
             ]
-          }
+          },
+          "unit": "decbytes"
         },
         "overrides": []
       },
@@ -360,7 +448,7 @@
         "x": 0,
         "y": 12
       },
-      "id": 4,
+      "id": 7,
       "options": {
         "legend": {
           "calcs": [],
@@ -373,6 +461,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "10.2.0",
       "targets": [
         {
           "datasource": {
@@ -380,15 +469,15 @@
             "uid": "prometheus_ds"
           },
           "disableTextWrap": false,
-          "editorMode": "code",
-          "expr": "node_memory_MemAvailable_bytes",
+          "editorMode": "builder",
+          "expr": "node_memory_Active_bytes",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "Free memory",
+          "legendFormat": "Memory in use ( {{group}} )",
           "range": true,
-          "refId": "C",
+          "refId": "A",
           "useBackend": false
         },
         {
@@ -397,19 +486,33 @@
             "uid": "prometheus_ds"
           },
           "disableTextWrap": false,
-          "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes",
+          "editorMode": "builder",
+          "expr": "node_memory_MemTotal_bytes - node_memory_Active_bytes",
           "fullMetaSearch": false,
           "hide": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "Memory in use",
+          "legendFormat": "Free memory ( {{group}} )",
           "range": true,
-          "refId": "D",
+          "refId": "B",
           "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus_ds"
+          },
+          "editorMode": "code",
+          "expr": "node_memory_MemTotal_bytes",
+          "hide": true,
+          "instant": false,
+          "legendFormat": "Total memory ( {{group}} )",
+          "range": true,
+          "refId": "C"
         }
       ],
-      "title": "Memory usage on graph",
+      "title": "Memory usage",
+      "transformations": [],
       "transparent": true,
       "type": "timeseries"
     },
@@ -501,13 +604,34 @@
             "type": "prometheus",
             "uid": "prometheus_ds"
           },
-          "editorMode": "code",
-          "expr": "sum by(job) (rate(node_cpu_seconds_total{mode!=\"idle\"}[1m]))",
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum by(job) (rate(node_cpu_seconds_total{mode!=\"idle\", group=\"ubuntu\"}[1m]))",
+          "fullMetaSearch": false,
           "hide": false,
+          "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "CPU usage ( ubuntu )",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus_ds"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum by(job) (rate(node_cpu_seconds_total{mode!=\"idle\", group=\"amazon\"}[1m]))",
+          "fullMetaSearch": false,
+          "hide": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "CPU usage ( amazon )",
+          "range": true,
+          "refId": "B",
+          "useBackend": false
         }
       ],
       "title": "CPU usage on graph",
@@ -521,9 +645,9 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "node_memory_MemTotal_bytes{group=\"ubuntu\",instance=\"192.168.50.101:9100\",job=\"wpServers\"} 995241984 1699965443000",
-          "value": "node_memory_MemTotal_bytes{group=\"ubuntu\",instance=\"192.168.50.101:9100\",job=\"wpServers\"} 995241984 1699965443000"
+          "selected": true,
+          "text": "node_memory_MemTotal_bytes{group=\"amazon\",instance=\"192.168.50.100:9100\",job=\"wpServers\"} 2076364800 1700031964000",
+          "value": "node_memory_MemTotal_bytes{group=\"amazon\",instance=\"192.168.50.100:9100\",job=\"wpServers\"} 2076364800 1700031964000"
         },
         "datasource": {
           "type": "prometheus",
@@ -551,7 +675,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -562,6 +686,6 @@
   "timezone": "",
   "title": "Specs",
   "uid": "b0e4e037-a8e1-4293-abaa-edab244631cc",
-  "version": 6,
+  "version": 2,
   "weekStart": ""
 }
