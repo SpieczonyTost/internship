@@ -23,25 +23,13 @@
     state: latest
   when: "ansible_facts.packages.python3 is undefined"
 
-- name: List ansible packages
-  ansible.builtin.shell:
-    cmd: 'yum list install pexpect | cut -d " " -f 1 | head -n 2'
-  register: pexpect
-
 - name: Install pexpect
   ansible.builtin.shell:
     cmd: python3 -m pip install pexpect
-  when: "pexpect.stdout == 'Loaded\nAvailable'"
-
-- name: List ansible packages
-  ansible.builtin.shell:
-    cmd: 'python3 -m pip list | tail -n 1'
-  register: PyMySQL
 
 - name: Install PyMySQL
   ansible.builtin.shell:
     cmd: python3 -m pip install PyMySQL==1.1.0
-  when: "PyMySQL.stdout != 'PyMySQL 1.1.0'"
 
 - name: Start mysql
   ansible.builtin.service:

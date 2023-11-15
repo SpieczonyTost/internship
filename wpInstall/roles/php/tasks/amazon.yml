@@ -1,7 +1,3 @@
-- name: Check if packages were collected successfully
-  ansible.builtin.debug:
-    var: ansible_facts.packages['amazon-linux-extras']
-
 - name: Update repositories
   ansible.builtin.yum: 
     name: yum
@@ -13,17 +9,14 @@
     name: amazon-linux-extras
     update_cache: yes
     state: latest
-  when: "ansible_facts.packages['amazon-linux-extras'] is undefined"
 
 - name: Enabling php7.4
   ansible.builtin.command:
     cmd: amazon-linux-extras enable php7.4
-  when: "ansible_facts.packages['amazon-linux-extras'] is undefined"
 
 - name: Disabling php5.4
   ansible.builtin.command:
     cmd: amazon-linux-extras disable php5.4
-  when: "ansible_facts.packages['amazon-linux-extras'] is undefined"
 
 - name: Check if packages were collected successfully
   ansible.builtin.debug:
