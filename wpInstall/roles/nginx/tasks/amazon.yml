@@ -1,3 +1,7 @@
+- name: Check if packages were collected successfully
+  ansible.builtin.debug:
+    var: ansible_facts.packages['nginx']
+
 - name: Update repositories
   ansible.builtin.yum: 
     name: yum
@@ -12,17 +16,12 @@
     group: root
     mode: 0644
 
-- name: List ansible packages
-  ansible.builtin.shell:
-    cmd: 'yum list install nginx | cut -d " " -f 1 | head -n 2'
-  register: nginx
-
 - name: Install nginx
   ansible.builtin.yum:
     name: nginx
     update_cache: yes
     state: latest
-  when: "nginx.stdout == 'Loaded\nAvailable'"
+  when: "ansible_facts.packages['nginx'] is undefined"
 
 - name: Include handlers
   ansible.builtin.include_tasks:
