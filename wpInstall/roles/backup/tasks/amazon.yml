@@ -1,0 +1,3 @@
+- name: Check if wokrs properly
+  ansible.builtin.debug:
+    msg: amazonBack is ready!
