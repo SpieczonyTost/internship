@@ -57,4 +57,6 @@ echo "$(mysql -u root -p1234 -e "create database wordpress" && mysql -u root -p1
 
 
 #create folders using cron on storing machine and REMEMBER to set ownership to user that is going to upload files
+#baw sie dobrze bo musisz co wymyslic bo cala struktura ktora czytasz jest na innej maszynie a ls glupio wyswietla
+#moze po tygodniu usuwaj caly folder jak sie przeslal
 #
