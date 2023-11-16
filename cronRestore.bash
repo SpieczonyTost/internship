@@ -56,5 +56,5 @@ echo "$(mysql -u root -p1234 -e "create database wordpress" && mysql -u root -p1
 
 
 
-#create folders via cron on FILE MACHINE
-#transfer only 
+#create folders using cron on storing machine and REMEMBER to set ownership to user that is going to upload files
+#
