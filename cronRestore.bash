@@ -1,10 +1,14 @@
-echo "Enter year: "
+echo "********************************Enter year********************************"
+echo "Available: $(ls /backups)"
 read restoreYear
-echo "Enter month: "
+echo "********************************Enter month********************************"
+echo "Available: $(ls /backups/$restoreYear)"
 read restoreMonth
-echo "Enter week: "
+echo "********************************Enter week********************************"
+echo "Available: $(ls /backups/$restoreYear/$restoreMonth -I first.tar)"
 read restoreWeek
-echo "Enter date: "
+echo "********************************Enter date********************************"
+echo "Available: $(ls /backups/$restoreYear/$restoreMonth/$restoreWeek)"
 read restoreDay
 
 file=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay* | cut -d "/" -f 6)             # full name of the file
@@ -43,6 +47,9 @@ then
 else
 echo "no such file"
 fi
+
+echo "$(tar -x -C / -f Restored_data.tar)"
+echo "$(mysql -u root -p1234 -e "create database wordpress" && mysql -u root -p1234 wordpress < /tmp/mysqlWp.aql && rm /tmp/mysqlWp.aql)"
 
 # mysqldump -u root -p1234 wordpress > mysqlWp.aql
  
