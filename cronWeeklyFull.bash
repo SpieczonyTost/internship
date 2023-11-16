@@ -1,5 +1,7 @@
-time=$(date +"%d_%H:%M")_Full
+time=$(date +"%d_%A")_Full
 year=$(date +"%Y")
 month=$(date +"%m_%B")
-creatingTar=$(tar -cf /backups/$year/$month/$time.tar /cronTest/*)
+day=$(date +"%j")
+week=$(($day / 7))
+creatingTar=$(tar -cf /backups/$year/$month/$week/$time.tar /cronTest/*)
 echo "$creatingTar"

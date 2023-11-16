@@ -1,6 +1,8 @@
-time=$(date +"%d_%H:%M")
+time=$(date +"%d_%A")
 year=$(date +"%Y")
 month=$(date +"%m_%B")
-lastBackup=$(ls -t /backups/$year/$month | head -1)
-difference=$(find /cronTest -type f -newer /backups/$year/$month/$lastBackup -print0 | tar -cf /backups/$year/$month/$time.tar -T -)
+day=$(date +"%j")
+week=$(($day / 7))
+lastBackup=$(ls -t /backups/$year/$month/$week | head -1)
+difference=$(find /cronTest -type f -newer /backups/$year/$month/$week/$lastBackup -print0 | tar -cf /backups/$year/$month/$week/$time.tar -T -)
 echo "$difference, $lastBackup"
