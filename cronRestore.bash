@@ -11,14 +11,7 @@ echo "********************************Enter date********************************
 echo "Available: $(ls /backups/$restoreYear/$restoreMonth/$restoreWeek)"
 read restoreDay
 
-file=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay* | cut -d "/" -f 6)             # full name of the file
-fileFull=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay* | cut -d "/" -f 6 | cut -d "_" -f 3 ) # checking if file name contains Full in it
-sunday=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*) # defining backup from sunday
-monday=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/*Monday*) # defining backup from monday
-wednesday=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday*) # defining backup from wednesday
-friday=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/*Friday*) # defining backup from friday
-copying=$(cp $sunday Restored_data.tar) # copying full backup in case user wants it
-
+source variables.bash
 
 if test -f /backups/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay*
 then
@@ -56,3 +49,12 @@ echo "$(mysql -u root -p1234 -e "create database wordpress" && mysql -u root -p1
 # mysql -u root -p1234 wordpress < mysqlWp.aql
 
 # mysql -u root -p1234 -e "create database wordpress"
+
+
+#apt install vsftpd
+
+
+
+
+#create folders via cron on FILE MACHINE
+#transfer only 

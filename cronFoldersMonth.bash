@@ -1,4 +1,4 @@
-year=$(date +"%Y")
-month=$(date +"%m_%B")
+source variables.bash
+
 creatingMonth=$(mkdir /backups/$year/$month)
 echo "$creatingMonth"
