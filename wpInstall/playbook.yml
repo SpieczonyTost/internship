@@ -19,7 +19,23 @@
     - node_exporter
     - nginx_exporter
     - fluentd
-    - debug
+    - backup_wp
+
+- name: Installation on backup machine
+  hosts: backups
+  become: true
+  gather_facts: true
+  vars_files:
+    - vars/default.yml
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+  pre_tasks:
+    - name: Setting the package manager to auto
+      package_facts:
+        manager: "auto"
+      tags: [always]
+  roles:
+    - backup
 
 - name: Installation of prometheus
   hosts: observators
@@ -37,7 +53,5 @@
   roles:
     - prometheus
     - grafana
-    - debug
-
 # Specific modules only       mysql, php, nginx, wordpress, prometheus, fluentd, grafana, nginx_exporter, node_exporter
 # Specific distro             ubuntu, amazon

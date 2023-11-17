@@ -1,0 +1,10 @@
+source /scripts/variables
+
+echo "$(mysqladmin -u root -p"{{ mysql_root_password }}" flush-logs)"
+flushLog=$(ls /var/log/mysql | grep mysql-bin.0 | tail -n 2 | head -1)
+lastBackup=$(ls -t /backups/$year/$month/$week | head -1)
+difference=$(find /var/www/html -type f -newer /backups/$year/$month/$week/$lastBackup -print0 | tar -cf /backups/$year/$month/$week/$time.tar -T - /var/log/mysql/$flushLog)
+
+bash /scripts/ftp.bash /backups/$year/$month/$week/$time.tar /backups/$year/$month/$week/$time.tar
+
+echo "$difference, $lastBackup"

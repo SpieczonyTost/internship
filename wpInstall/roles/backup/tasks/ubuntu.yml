@@ -1,0 +1,55 @@
+- name: Add the user 'backups'
+  ansible.builtin.user:
+    name: backups
+    password: $6$uUU.qnsvw2Dn.tal$l5pD6SozfYfK9DQGqgZDKxX57T.v5De1T4HXUjyPAF6iPYXjzqEAKap0R8amJ9Kg4QWwfwUWeiN7SBGfEcZ111
+    home: /backups
+
+- name: Install vsftpd
+  ansible.builtin.package:
+    name: vsftpd
+  when: "not 'vsftpd' in ansible_facts.ohai_packages"
+
+- name: Overrite the vsftpd.conf
+  ansible.builtin.copy:
+    src: vsftpd.conf
+    dest: /etc/vsftpd.conf
+    owner: root
+    group: root
+
+- name: Create folders for scripts
+  ansible.builtin.file:
+    path: /scripts
+    state: directory
+
+- name: Copy all scripts
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /scripts
+    mode: +x
+  loop: [ cronFoldersYear.bash, cronFoldersMonth.bash, cronFoldersWeek.bash, cronRestore.bash, variables ]
+
+- name: Create folders for backups (year)
+  ansible.builtin.shell:
+    cmd: bash /scripts/cronFoldersYear.bash
+  
+- name: Create folders for backups (month)
+  ansible.builtin.shell:
+    cmd: bash /scripts/cronFoldersMonth.bash
+
+- name: Create folders for backups (week)
+  ansible.builtin.shell:
+    cmd: bash /scripts/cronFoldersWeek.bash
+
+- name: Create cron file
+  ansible.builtin.copy:
+    src: crontab
+    dest: /etc/crontab
+
+- name: Restart cron
+  ansible.builtin.systemd:
+    name: cron
+    state: restarted
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/backup/handlers/main.yml

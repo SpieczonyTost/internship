@@ -20,6 +20,15 @@ observators:
     ansible_ssh_private_key_file: ~/.ssh/rsa_key
     ansible_python_interpreter: /usr/bin/python3
 
+backups:
+  hosts:
+    ubuntuBak:
+      ansible_host: 192.168.50.105
+  vars:
+    ansible_user: vagrant
+    ansible_ssh_private_key_file: ~/.ssh/rsa_key
+    ansible_python_interpreter: /usr/bin/python3
+
 allhosts:
   children:
     observators:

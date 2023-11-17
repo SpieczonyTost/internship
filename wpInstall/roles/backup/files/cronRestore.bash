@@ -11,7 +11,15 @@ echo "********************************Enter date********************************
 echo "Available: $(ls /backups/$restoreYear/$restoreMonth/$restoreWeek)"
 read restoreDay
 
-source variables.bash
+source /scripts/variables
+
+file=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay* | cut -d "/" -f 6)             # full name of the file
+fileFull=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay* | cut -d "/" -f 6 | cut -d "_" -f 3 ) # checking if file name contains Full in it
+sunday=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*) # defining backup from sunday
+monday=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/*Monday*) # defining backup from monday
+wednesday=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday*) # defining backup from wednesday
+friday=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/*Friday*) # defining backup from friday
+copying=$(cp $sunday Restored_data.tar) # copying full backup in case user wants it
 
 if test -f /backups/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay*
 then
@@ -41,15 +49,23 @@ else
 echo "no such file"
 fi
 
-echo "$(tar -x -C / -f Restored_data.tar)"
-echo "$(mysql -u root -p1234 -e "create database wordpress" && mysql -u root -p1234 wordpress < /tmp/mysqlWp.aql && rm /tmp/mysqlWp.aql)"
+echo "$(chown backups:backups /Restored_data.tar)"
 
-# mysqldump -u root -p1234 wordpress > mysqlWp.aql
+# echo "$(tar -x -C / -f Restored_data.tar)"
+# echo "$(mysql -u root -p1234 -e "create database wordpress" && mysql -u root -p1234 wordpress --flush-logs < /tmp/mysqlWp_Full.sql && rm /tmp/mysqlWp_Full.sql)"
+# echo "$()"
+
+# mysqldump -u root -p1234 wordpress --flush-logs > /tmp/mysqlWp_Full.sql
  
-# mysql -u root -p1234 wordpress < mysqlWp.aql
+# mysql -u root -p1234 wordpress < /tmp/mysqlWp_Full.sql
 
 # mysql -u root -p1234 -e "create database wordpress"
 
+# mysql -u root -p1234 -e "drop database wordpress"
+
+# mysqladmin -u root -p1234 flush-logs
+
+# mysqlbinlog /var/log/mysql/mysql-bin.000001 | mysql -u root -p1234 wordpress
 
 #apt install vsftpd
 

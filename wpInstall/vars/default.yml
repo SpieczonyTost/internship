@@ -1,6 +1,6 @@
 # MySQL Settings
 mysql_root_password: "1234"
-mysql_db: "wordpress"
+mysql_db: "wordpress" # DO NOT change
 mysql_user: "wordpressuser"
 mysql_password: "123"
 mysql_db_prefix: wp_

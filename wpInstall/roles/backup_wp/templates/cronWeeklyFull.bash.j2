@@ -1,0 +1,9 @@
+source /scripts/variables
+
+echo "$(rm /var/log/mysql/mysql-bin.*)"
+echo "$(mysqldump -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}" --flush-logs  > /tmp/mysqlWp_Full.sql)"
+creatingTar=$(tar -cf /backups/$year/$month/$week/$timeFull.tar /var/www/html/* /tmp/mysqlWp_Full.sql)
+
+bash /scripts/ftp.bash /backups/$year/$month/$week/$timeFull.tar /backups/$year/$month/$week/$timeFull.tar
+
+echo "$creatingTar, $(rm /tmp/mysqlWp_Full.sql)"

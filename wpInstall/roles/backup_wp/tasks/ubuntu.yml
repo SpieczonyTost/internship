@@ -1,0 +1,55 @@
+- name: Create folders for scripts
+  ansible.builtin.file:
+    path: /scripts
+    state: directory
+
+- name: Create folders for backups
+  ansible.builtin.file:
+    path: /backups
+    state: directory
+
+- name: Copy all scripts
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /scripts
+    mode: +x
+  loop: [ ftp.bash, cronFoldersYear.bash, cronFoldersMonth.bash, cronFoldersWeek.bash, variables ]
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: /scripts
+    mode: +x
+  loop: [ cronFOM.bash.j2, cronWeekly.bash.j2, cronWeeklyFull.bash.j2, cronFOM.tar.j2, variables ]
+
+- name: Create folders for backups (year)
+  ansible.builtin.shell:
+    cmd: bash /scripts/cronFoldersYear.bash
+  
+- name: Create folders for backups (month)
+  ansible.builtin.shell:
+    cmd: bash /scripts/cronFoldersMonth.bash
+
+- name: Create folders for backups (week)
+  ansible.builtin.shell:
+    cmd: bash /scripts/cronFoldersWeek.bash
+
+- name: Overrite mysql conf
+  ansible.builtin.copy:
+    src: mysqld.cnf
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+
+- name: Create cron file
+  ansible.builtin.copy:
+    src: crontab
+    dest: /etc/crontab
+
+- name: Restart cron
+  ansible.builtin.systemd:
+    name: cron
+    state: restarted
+
+- name: Restart MySQL
+  ansible.builtin.service:
+    name: mysql
+    state: restarted
