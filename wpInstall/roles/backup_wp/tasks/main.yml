@@ -2,10 +2,10 @@
   ansible.builtin.import_tasks:
     file: ubuntu.yml
   when: (ansible_facts['distribution'] == 'Ubuntu')
-  tags: [ backup, ubuntu ]
+  tags: [ backup_wp, ubuntu ]
 
 - name: Choosing Amazon
   ansible.builtin.import_tasks:
     file: amazon.yml
   when: (ansible_facts['distribution'] == 'Amazon')   
-  tags: [ backup, amazon ]
+  tags: [ backup_wp, amazon ]

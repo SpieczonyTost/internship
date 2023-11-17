@@ -17,10 +17,27 @@
 
 - name: Copy all scripts
   ansible.builtin.template:
-    src: "{{ item }}"
-    dest: /scripts
+    src: ronFOM.bash.j2
+    dest: /scripts/ronFOM.bash
     mode: +x
-  loop: [ cronFOM.bash.j2, cronWeekly.bash.j2, cronWeeklyFull.bash.j2, cronFOM.tar.j2, variables ]
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronWeekly.bash.j2
+    dest: /scripts/cronWeekly.bash
+    mode: +x
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronWeeklyFull.bash.j2
+    dest: /scripts/cronWeeklyFull.bash
+    mode: +x
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronRestore.bash.j2
+    dest: /scripts/cronRestore.bash
+    mode: +x
 
 - name: Create folders for backups (year)
   ansible.builtin.shell:
