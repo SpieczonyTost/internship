@@ -17,7 +17,7 @@
 
 - name: Copy all scripts
   ansible.builtin.template:
-    src: ronFOM.bash.j2
+    src: cronFOM.bash.j2
     dest: /scripts/ronFOM.bash
     mode: +x
 
