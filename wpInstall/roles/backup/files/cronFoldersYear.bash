@@ -1,4 +1,4 @@
 source /scripts/variables
 
-creatingYear=$(mkdir /backups/$year)
-echo "$creatingYear, $(chown backups:backups /backups/$year)"
+creatingYear=$(mkdir /backupsUbuntu/$year)
+echo "$creatingYear, $(chown backups:backups /backupsUbuntu/$year)"

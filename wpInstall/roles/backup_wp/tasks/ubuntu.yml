@@ -5,7 +5,7 @@
 
 - name: Create folders for backups
   ansible.builtin.file:
-    path: /backups
+    path: /backupsUbuntu
     state: directory
 
 - name: Copy all scripts
@@ -56,10 +56,25 @@
     src: mysqld.cnf
     dest: /etc/mysql/mysql.conf.d/mysqld.cnf
 
-- name: Create cron file
-  ansible.builtin.copy:
-    src: crontab
-    dest: /etc/crontab
+- name: Create crontab jobs
+  ansible.builtin.cron:
+    name: "{{ item.name }}"
+    minute: "{{ item.minute }}"
+    hour: "{{ item.hour }}"
+    day: "{{ item.day }}"
+    month: "{{ item.month }}"
+    weekday: "{{ item.weekday }}"
+    user: root
+    job: "{{ item.job }}"
+  loop:
+    - { job: 'bash /scripts/cronFoldersYear.bash',  name: 'Years', minute: '0', hour: '19', day: '1', month: '1', weekday: '*' }
+    - { job: 'bash /scripts/cronFoldersMonth.bash', name: 'Months', minute: '1', hour: '19', day: '1', month: '*' , weekday: '*' }
+    - { job: 'bash /scripts/cronFoldersWeek.bash',  name: 'Weekends', minute: '2', hour: '19', day: '*', month: '1', weekday: 'Sun' }
+    - { job: 'bash /scripts/cronFOM.bash',          name: 'FOM', minute: '0', hour: '20', day: '1', month: '*' , weekday: '*' }
+    - { job: 'bash /scripts/cronWeeklyFull.bash',   name: 'WeeklyFull', minute: '1', hour: '20', day: '1', month: '*' , weekday: 'Sun' }
+    - { job: 'bash /scripts/cronWeekly.bash',       name: 'WeeklyMon', minute: '2', hour: '20', day: '*', month: '*' , weekday: '1' }
+    - { job: 'bash /scripts/cronWeekly.bash',       name: 'WeeklyWed', minute: '3', hour: '20', day: '*', month: '*' , weekday: '3' }
+    - { job: 'bash /scripts/cronWeekly.bash',       name: 'WeeklyFri', minute: '4', hour: '20', day: '*', month: '*' , weekday: '5' }
 
 - name: Restart cron
   ansible.builtin.systemd:

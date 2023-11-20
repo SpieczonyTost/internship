@@ -2,7 +2,7 @@
   ansible.builtin.user:
     name: backups
     password: $6$uUU.qnsvw2Dn.tal$l5pD6SozfYfK9DQGqgZDKxX57T.v5De1T4HXUjyPAF6iPYXjzqEAKap0R8amJ9Kg4QWwfwUWeiN7SBGfEcZ111
-    home: /backups
+    home: /backupsUbuntu
 
 - name: Install vsftpd
   ansible.builtin.package:
@@ -42,8 +42,29 @@
 
 - name: Create cron file
   ansible.builtin.copy:
-    src: crontab
-    dest: /etc/crontab
+    src: test.bash
+    dest: /test.bash
+
+- name: Ensure a job that runs at 2 and 5 exists. Creates an entry like "0 5,2 * * ls -alh > /dev/null"
+  ansible.builtin.cron:
+    name: "{{ item.name }}"
+    minute: "{{ item.minute }}"
+    hour: "{{ item.hour }}"
+    day: "{{ item.day }}"
+    month: "{{ item.month }}"
+    weekday: "{{ item.weekday }}"
+    user: root
+    job: "{{ item.job }}"
+  loop:
+    - { job: 'bash /scripts/cronFoldersYear.bash', name: 'Years', minute: '0', hour: '19', day: '1', weekday: '*', month: '1' }
+    - { job: 'bash /scripts/cronFoldersMonth.bash', name: 'Months', minute: '1', hour: '19', day: '1', month: '*' ,weekday: '*' }
+    - { job: 'bash /scripts/cronFoldersWeek.bash', name: 'Weekends', minute: '2', hour: '19', month: '1' ,weekday: 'Sun', day: '*' }
+
+# 0 19 1 1 *      bash cronFoldersYear.bash
+# 1 19 1 * *      bash cronFoldersMonth.bash
+# 2 19 * 1 Sun    bash cronFoldersWeek.bash
+
+#minute hour day weekday month
 
 - name: Restart cron
   ansible.builtin.systemd:

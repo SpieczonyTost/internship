@@ -1,8 +1,11 @@
 source /scripts/variables
 
 echo "$(mysqldump -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}" > /tmp/mysqlWp_Full.sql)"
-creatingTar=$(tar -cf /backups/$year/$month/first.tar /var/www/html/* /tmp/mysqlWp_Full.sql)
+creatingTar=$(tar -cf /backupsUbuntu/$year/$month/first.tar /var/www/html/* /tmp/mysqlWp_Full.sql)
 
-bash /scripts/ftp.bash /backups/$year/$month/first.tar /backups/$year/$month/first.tar
+bash /scripts/ftp.bash /backupsUbuntu/$year/$month/first.tar /backupsUbuntu/$year/$month/first.tar
 
 echo "$creatingTar, $(rm /tmp/mysqlWp_Full.sql)"
+
+previousMonth=$(ls /backupsUbuntu/$year -I $month)
+rm -rf /backupsUbuntu/$year/$previousMonth

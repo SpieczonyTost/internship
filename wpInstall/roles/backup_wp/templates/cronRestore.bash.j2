@@ -1,27 +1,27 @@
 # echo "********************************Enter year********************************"
-# echo "Available: $(ls /backups)"
+# echo "Available: $(ls /backupsUbuntu)"
 # read restoreYear
 # echo "********************************Enter month********************************"
-# echo "Available: $(ls /backups/$restoreYear)"
+# echo "Available: $(ls /backupsUbuntu/$restoreYear)"
 # read restoreMonth
 # echo "********************************Enter week********************************"
-# echo "Available: $(ls /backups/$restoreYear/$restoreMonth -I first.tar)"
+# echo "Available: $(ls /backupsUbuntu/$restoreYear/$restoreMonth -I first.tar)"
 # read restoreWeek
 # echo "********************************Enter date********************************"
-# echo "Available: $(ls /backups/$restoreYear/$restoreMonth/$restoreWeek)"
+# echo "Available: $(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek)"
 # read restoreDay
 
 # source /scripts/variables
 
-# file=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay* | cut -d "/" -f 6)             # full name of the file
-# fileFull=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay* | cut -d "/" -f 6 | cut -d "_" -f 3 ) # checking if file name contains Full in it
-# sunday=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*) # defining backup from sunday
-# monday=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/*Monday*) # defining backup from monday
-# wednesday=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday*) # defining backup from wednesday
-# friday=$(ls /backups/$restoreYear/$restoreMonth/$restoreWeek/*Friday*) # defining backup from friday
+# file=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay* | cut -d "/" -f 6)             # full name of the file
+# fileFull=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay* | cut -d "/" -f 6 | cut -d "_" -f 3 ) # checking if file name contains Full in it
+# sunday=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*) # defining backup from sunday
+# monday=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday*) # defining backup from monday
+# wednesday=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday*) # defining backup from wednesday
+# friday=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Friday*) # defining backup from friday
 # copying=$(cp $sunday Restored_data.tar) # copying full backup in case user wants it
 
-# if test -f /backups/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay*
+# if test -f /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay*
 # then
 #   if [[ "$fileFull" = "Full.tar" ]]
 #   then
