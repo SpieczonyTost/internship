@@ -1,8 +1,14 @@
+# ip addresses (for ansible)
+#
+# if more ip addresses/machines are added, they should be added to:
+#  - roles -> backup -> templates -> hosts.allow.j2
+amazon_ip: "192.168.50.100"
+
 # MySQL Settings
 mysql_root_password: "1234"
 mysql_db: "wordpress"
 mysql_user: "wordpressuser"
-mysql_password: "123"
+mysql_password: "1234"
 mysql_db_prefix: wp_
 
 
@@ -32,3 +38,14 @@ amazon_org_id: "1"
 amazon_ds_name: "Prometheus"
 amazon_ds_type: "prometheus"
 amazon_ds_url: "http://localhost:9090"
+
+# backup config
+backup_app_root: "/etc/backupAmazon"
+backup_server_ip: "192.168.50.105"
+backup_user: "backups" # this will create a system user on the backup server
+backup_password: "1234"
+backup_hashed_password: "$6$vr/4bYgE.AMhe24Z$BVzlmeOAvGaI376SML.xVrwXbfVSWe2ZF0kZSw1fD6FAysDUuJ3WuIHzPNfdWjncIK5ZyEI4fkf5H1rdIctDF0"
+#
+# !!! important, if you change password for user backup (^), 
+# you will have to generate it's hashed version and insert it above
+#
