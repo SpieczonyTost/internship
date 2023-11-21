@@ -112,7 +112,6 @@
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/backup/handlers/main.yml
-    mode: '0644'
 
 - name: "chmod a-w /home/backups/; change permission to home of backups user"
   ansible.builtin.file:
