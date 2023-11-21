@@ -1,0 +1,11 @@
+- name: Choosing Ubuntu
+  ansible.builtin.import_tasks:
+    file: ubuntu.yml
+  when: (ansible_facts['distribution'] == 'Ubuntu')
+  tags: [ ssl_cert, ubuntu ]
+
+- name: Choosing Amazon
+  ansible.builtin.import_tasks:
+    file: amazon.yml
+  when: (ansible_facts['distribution'] == 'Amazon')   
+  tags: [ ssl_cert, amazon ]

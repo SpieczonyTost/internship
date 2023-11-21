@@ -20,6 +20,7 @@
     - nginx_exporter
     - fluentd
     - backup_wp
+    - ssl_cert
     - debug
 
 - name: Installation of backup machines
