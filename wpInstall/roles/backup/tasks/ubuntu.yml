@@ -1,7 +1,7 @@
 - name: Add the user 'backups'
   ansible.builtin.user:
-    name: backups
-    password: $6$uUU.qnsvw2Dn.tal$l5pD6SozfYfK9DQGqgZDKxX57T.v5De1T4HXUjyPAF6iPYXjzqEAKap0R8amJ9Kg4QWwfwUWeiN7SBGfEcZ111
+    name: "{{backups_username}}"
+    password: "{{backups_password_hashed}}"
     home: /backupsUbuntu
 
 - name: Install vsftpd
@@ -26,7 +26,31 @@
     src: "{{ item }}"
     dest: /scripts
     mode: +x
-  loop: [ cronFoldersYear.bash, cronFoldersMonth.bash, cronFoldersWeek.bash, cronRestore.bash, variables ]
+  loop: [ variables ]
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronFoldersYear.bash.j2
+    dest: /scripts/cronFoldersYear.bash
+    mode: +x
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronFoldersMonth.bash.j2
+    dest: /scripts/cronFoldersMonth.bash
+    mode: +x
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronFoldersWeek.bash.j2
+    dest: /scripts/cronFoldersWeek.bash
+    mode: +x
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronRestore.bash.j2
+    dest: /scripts/cronRestore.bash
+    mode: +x
 
 - name: Create folders for backups (year)
   ansible.builtin.shell:
@@ -40,12 +64,7 @@
   ansible.builtin.shell:
     cmd: bash /scripts/cronFoldersWeek.bash
 
-- name: Create cron file
-  ansible.builtin.copy:
-    src: test.bash
-    dest: /test.bash
-
-- name: Ensure a job that runs at 2 and 5 exists. Creates an entry like "0 5,2 * * ls -alh > /dev/null"
+- name: Creato jobs for cron
   ansible.builtin.cron:
     name: "{{ item.name }}"
     minute: "{{ item.minute }}"
@@ -59,16 +78,15 @@
     - { job: 'bash /scripts/cronFoldersYear.bash', name: 'Years', minute: '0', hour: '19', day: '1', weekday: '*', month: '1' }
     - { job: 'bash /scripts/cronFoldersMonth.bash', name: 'Months', minute: '1', hour: '19', day: '1', month: '*' ,weekday: '*' }
     - { job: 'bash /scripts/cronFoldersWeek.bash', name: 'Weekends', minute: '2', hour: '19', month: '1' ,weekday: 'Sun', day: '*' }
-
-# 0 19 1 1 *      bash cronFoldersYear.bash
-# 1 19 1 * *      bash cronFoldersMonth.bash
-# 2 19 * 1 Sun    bash cronFoldersWeek.bash
-
-#minute hour day weekday month
-
+    
 - name: Restart cron
   ansible.builtin.systemd:
     name: cron
+    state: restarted
+
+- name: Restart vsftpd
+  ansible.builtin.systemd:
+    name: vsftpd
     state: restarted
 
 - name: Include handlers

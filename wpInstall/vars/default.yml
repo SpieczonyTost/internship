@@ -32,3 +32,8 @@ amazon_org_id: "1"
 amazon_ds_name: "Prometheus"
 amazon_ds_type: "prometheus"
 amazon_ds_url: "http://localhost:9090"
+
+backups_address: "192.168.50.105"
+backups_username: "backups"
+backups_password_hashed: "$6$uUU.qnsvw2Dn.tal$l5pD6SozfYfK9DQGqgZDKxX57T.v5De1T4HXUjyPAF6iPYXjzqEAKap0R8amJ9Kg4QWwfwUWeiN7SBGfEcZ111"
+backups_password: "123"

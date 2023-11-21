@@ -13,8 +13,27 @@
     src: "{{ item }}"
     dest: /scripts
     mode: +x
-  loop: [ ftp.bash, cronFoldersYear.bash, cronFoldersMonth.bash, cronFoldersWeek.bash, variables ]
+  loop: [ variables ]
 
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronFoldersYear.bash.j2
+    dest: /scripts/cronFoldersYear.bash
+    mode: +x
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronFoldersMonth.bash.j2
+    dest: /scripts/cronFoldersMonth.bash
+    mode: +x
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronFoldersWeek.bash.j2
+    dest: /scripts/cronFoldersWeek.bash
+    mode: +x
+    
 - name: Copy all scripts
   ansible.builtin.template:
     src: cronFOM.bash.j2
@@ -37,6 +56,12 @@
   ansible.builtin.template:
     src: cronRestore.bash.j2
     dest: /scripts/cronRestore.bash
+    mode: +x
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: ftp.bash.j2
+    dest: /scripts/ftp.bash
     mode: +x
 
 - name: Create folders for backups (year)
@@ -67,14 +92,14 @@
     user: root
     job: "{{ item.job }}"
   loop:
-    - { job: 'bash /scripts/cronFoldersYear.bash',  name: 'Years', minute: '0', hour: '19', day: '1', month: '1', weekday: '*' }
-    - { job: 'bash /scripts/cronFoldersMonth.bash', name: 'Months', minute: '1', hour: '19', day: '1', month: '*' , weekday: '*' }
-    - { job: 'bash /scripts/cronFoldersWeek.bash',  name: 'Weekends', minute: '2', hour: '19', day: '*', month: '1', weekday: 'Sun' }
-    - { job: 'bash /scripts/cronFOM.bash',          name: 'FOM', minute: '0', hour: '20', day: '1', month: '*' , weekday: '*' }
+    - { job: 'bash /scripts/cronFoldersYear.bash',  name: 'Years',      minute: '0', hour: '19', day: '1', month: '1', weekday: '*' }
+    - { job: 'bash /scripts/cronFoldersMonth.bash', name: 'Months',     minute: '1', hour: '19', day: '1', month: '*' , weekday: '*' }
+    - { job: 'bash /scripts/cronFoldersWeek.bash',  name: 'Weekends',   minute: '2', hour: '19', day: '*', month: '1', weekday: 'Sun' }
+    - { job: 'bash /scripts/cronFOM.bash',          name: 'FOM',        minute: '0', hour: '20', day: '1', month: '*' , weekday: '*' }
     - { job: 'bash /scripts/cronWeeklyFull.bash',   name: 'WeeklyFull', minute: '1', hour: '20', day: '1', month: '*' , weekday: 'Sun' }
-    - { job: 'bash /scripts/cronWeekly.bash',       name: 'WeeklyMon', minute: '2', hour: '20', day: '*', month: '*' , weekday: '1' }
-    - { job: 'bash /scripts/cronWeekly.bash',       name: 'WeeklyWed', minute: '3', hour: '20', day: '*', month: '*' , weekday: '3' }
-    - { job: 'bash /scripts/cronWeekly.bash',       name: 'WeeklyFri', minute: '4', hour: '20', day: '*', month: '*' , weekday: '5' }
+    - { job: 'bash /scripts/cronWeekly.bash',       name: 'WeeklyMon',  minute: '2', hour: '20', day: '*', month: '*' , weekday: '1' }
+    - { job: 'bash /scripts/cronWeekly.bash',       name: 'WeeklyWed',  minute: '3', hour: '20', day: '*', month: '*' , weekday: '3' }
+    - { job: 'bash /scripts/cronWeekly.bash',       name: 'WeeklyFri',  minute: '4', hour: '20', day: '*', month: '*' , weekday: '5' }
 
 - name: Restart cron
   ansible.builtin.systemd:

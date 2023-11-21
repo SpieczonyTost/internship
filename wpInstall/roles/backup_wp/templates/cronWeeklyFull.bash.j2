@@ -1,12 +1,17 @@
 source /scripts/variables
 
-echo "$(rm /var/log/mysql/mysql-bin.*)"
-echo "$(mysqldump -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}" --flush-logs  > /tmp/mysqlWp_Full.sql)"
+$(rm /var/log/mysql/mysql-bin.*)
+$(mysqldump -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}" --flush-logs  > /tmp/mysqlWp_Full.sql)
 creatingTar=$(tar -cf /backupsUbuntu/$year/$month/$week/$timeFull.tar /var/www/html/* /tmp/mysqlWp_Full.sql)
 
-bash /scripts/ftp.bash /backupsUbuntu/$year/$month/$week/$timeFull.tar /backupsUbuntu/$year/$month/$week/$timeFull.tar
+exist=$(ls /backupsUbuntu/$year/$month/$week | grep $timeFull.tar.gz)
+if [ $exist != null ]
+then
+  bash /scripts/ftp.bash /backupsUbuntu/$year/$month/$week/$timeFull.tar.gz /backupsUbuntu/$year/$month/$week/$timeFull.tar.gz
+else
+  gzip /backupsUbuntu/$year/$month/$week/$timeFull.tar
+  
+  bash /scripts/ftp.bash /backupsUbuntu/$year/$month/$week/$timeFull.tar.gz /backupsUbuntu/$year/$month/$week/$timeFull.tar.gz
+fi
 
-echo "$creatingTar, $(rm /tmp/mysqlWp_Full.sql)"
-
-previousWeek=$(ls /backupsUbuntu/$year/$month -I $week)
-rm -rf /backupsUbuntu/$year/$month/$previousWeek
+$creatingTar, $(rm /tmp/mysqlWp_Full.sql)

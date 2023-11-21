@@ -1,57 +1,6 @@
-# echo "********************************Enter year********************************"
-# echo "Available: $(ls /backupsUbuntu)"
-# read restoreYear
-# echo "********************************Enter month********************************"
-# echo "Available: $(ls /backupsUbuntu/$restoreYear)"
-# read restoreMonth
-# echo "********************************Enter week********************************"
-# echo "Available: $(ls /backupsUbuntu/$restoreYear/$restoreMonth -I first.tar)"
-# read restoreWeek
-# echo "********************************Enter date********************************"
-# echo "Available: $(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek)"
-# read restoreDay
-
-# source /scripts/variables
-
-# file=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay* | cut -d "/" -f 6)             # full name of the file
-# fileFull=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay* | cut -d "/" -f 6 | cut -d "_" -f 3 ) # checking if file name contains Full in it
-# sunday=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*) # defining backup from sunday
-# monday=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday*) # defining backup from monday
-# wednesday=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday*) # defining backup from wednesday
-# friday=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Friday*) # defining backup from friday
-# copying=$(cp $sunday Restored_data.tar) # copying full backup in case user wants it
-
-# if test -f /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay*
-# then
-#   if [[ "$fileFull" = "Full.tar" ]]
-#   then
-#     echo "$copying, $fileFull"
-#   else
-#     echo "$file"
-#     case "$file" in
-#       *"Monday.tar")
-#         echo "$copying"
-#         echo "$(tar -A -f Restored_data.tar $monday)"
-#       ;;
-#       *"Wednesday.tar")
-#         echo "$copying"
-#         echo "$(tar -A -f Restored_data.tar $monday)"
-#         echo "$(tar -A -f Restored_data.tar $wednesday)"
-#       ;;
-#       *"Friday.tar")
-#         echo "$copying"
-#         echo "$(tar -A -f Restored_data.tar $monday)"
-#         echo "$(tar -A -f Restored_data.tar $wednesday)"
-#         echo "$(tar -A -f Restored_data.tar $friday)"
-#     esac
-#   fi
-# else
-# echo "no such file"
-# fi
-
-HOST=192.168.50.105
-USER=backups
-PASSWORD=123
+HOST="{{ backups_address }}"
+USER="{{ backups_username }}"
+PASSWORD="{{ backups_password }}"
 
 ftp -inv $HOST <<EOF
 user $USER $PASSWORD
@@ -59,9 +8,14 @@ get /Restored_data.tar
 bye
 EOF
 
-tar -x -C / -f /scripts/Restored_data.tar
-rm /scripts/Restored_data.tar
-mysql -u root -p"{{ mysql_root_password }}" -e 'create database "{{ mysql_db }}"' && mysql -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}" < /tmp/mysqlWp_Full.sql && rm /tmp/mysqlWp_Full.sql
+if [ $(pwd) != /]
+then
+    mv $(pwd)/Restored_data.tar /
+fi
+
+tar -x -C / -f /Restored_data.tar
+rm /Restored_data.tar
+mysql -u root -p"{{ mysql_root_password }}" -e "create database "{{ mysql_db }}"" && mysql -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}" < /tmp/mysqlWp_Full.sql && rm /tmp/mysqlWp_Full.sql
 mysqlbinlog /var/log/mysql/mysql-bin.000001 | mysql -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}"
 mysqlbinlog /var/log/mysql/mysql-bin.000002 | mysql -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}"
 mysqlbinlog /var/log/mysql/mysql-bin.000003 | mysql -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}"
@@ -80,11 +34,3 @@ rm /var/log/mysql/mysql-bin.*
 # mysqlbinlog /var/log/mysql/mysql-bin.000001 | mysql -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}"
 
 #apt install vsftpd
-
-
-
-
-#create folders using cron on storing machine and REMEMBER to set ownership to user that is going to upload files
-#baw sie dobrze bo musisz co wymyslic bo cala struktura ktora czytasz jest na innej maszynie a ls glupio wyswietla
-#moze po tygodniu usuwaj caly folder jak sie przeslal
-#

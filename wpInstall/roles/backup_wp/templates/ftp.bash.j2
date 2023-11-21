@@ -1,0 +1,9 @@
+HOST="{{ backups_address }}"
+USER="{{ backups_username }}"
+PASSWORD="{{ backups_password }}"
+
+ftp -inv $HOST <<EOF
+user $USER $PASSWORD
+put $1 $2
+bye
+EOF

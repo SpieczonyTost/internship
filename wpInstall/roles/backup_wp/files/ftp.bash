@@ -1,9 +1,0 @@
-HOST=192.168.50.105
-USER=backups
-PASSWORD=123
-
-ftp -inv $HOST <<EOF
-user $USER $PASSWORD
-put $1 $2
-bye
-EOF
