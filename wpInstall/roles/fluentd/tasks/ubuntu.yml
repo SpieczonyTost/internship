@@ -1,3 +1,6 @@
+- name: Set the right timezone
+  ansible.builtin.shell: "sudo timedatectl set-timezone Europe/Warsaw"
+
 - name: Install build-essential
   ansible.builtin.package:
     name: "build-essential"

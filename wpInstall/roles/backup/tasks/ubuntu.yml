@@ -1,6 +1,3 @@
-- name: Check if wokrs properly
-  ansible.builtin.debug:
-    msg: ubuntuBak is ready!
 
 - name: Check if packages were collected successfully
   ansible.builtin.debug:
@@ -17,18 +14,104 @@
     group: "{{backup_user}}"
     password: "{{backup_hashed_password}}"
     shell: /bin/bash
+    
+- name: Create directory /backupsUbuntu
+  ansible.builtin.file:
+    path: /backupsUbuntu
+    state: directory
+    group: "{{backup_user}}"
+    owner: "{{backup_user}}"
 
 - name: Install vsftpd
   ansible.builtin.package:
     name: vsftpd
-    state: present
+  when: "not 'vsftpd' in ansible_facts.ohai_packages"
 
-- name: Copy /etc/vsftpd.conf
+- name: Overrite the vsftpd.conf
   ansible.builtin.copy:
+    state: present
     src: vsftpd.conf
     dest: /etc/vsftpd.conf
     owner: root
     group: root
+
+
+- name: Create folders for scripts
+  ansible.builtin.file:
+    path: /scripts
+    state: directory
+
+- name: Copy all scripts
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /scripts
+    mode: +x
+  loop: [ variables ]
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronFoldersYear.bash.j2
+    dest: /scripts/cronFoldersYear.bash
+    mode: +x
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronFoldersMonth.bash.j2
+    dest: /scripts/cronFoldersMonth.bash
+    mode: +x
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronFoldersWeek.bash.j2
+    dest: /scripts/cronFoldersWeek.bash
+    mode: +x
+
+- name: Copy all scripts
+  ansible.builtin.template:
+    src: cronRestore.bash.j2
+    dest: /scripts/cronRestore.bash
+    mode: +x
+
+- name: Create folders for backups (year)
+  ansible.builtin.shell:
+    cmd: bash /scripts/cronFoldersYear.bash
+  
+- name: Create folders for backups (month)
+  ansible.builtin.shell:
+    cmd: bash /scripts/cronFoldersMonth.bash
+
+- name: Create folders for backups (week)
+  ansible.builtin.shell:
+    cmd: bash /scripts/cronFoldersWeek.bash
+
+- name: Creato jobs for cron
+  ansible.builtin.cron:
+    name: "{{ item.name }}"
+    minute: "{{ item.minute }}"
+    hour: "{{ item.hour }}"
+    day: "{{ item.day }}"
+    month: "{{ item.month }}"
+    weekday: "{{ item.weekday }}"
+    user: root
+    job: "{{ item.job }}"
+  loop:
+    - { job: 'bash /scripts/cronFoldersYear.bash', name: 'Years', minute: '0', hour: '19', day: '1', weekday: '*', month: '1' }
+    - { job: 'bash /scripts/cronFoldersMonth.bash', name: 'Months', minute: '1', hour: '19', day: '1', month: '*' ,weekday: '*' }
+    - { job: 'bash /scripts/cronFoldersWeek.bash', name: 'Weekends', minute: '2', hour: '19', month: '1' ,weekday: 'Sun', day: '*' }
+    
+- name: Restart cron
+  ansible.builtin.systemd:
+    name: cron
+    state: restarted
+
+- name: Restart vsftpd
+  ansible.builtin.systemd:
+    name: vsftpd
+    state: restarted
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/backup/handlers/main.yml
     mode: '0644'
 
 - name: "chmod a-w /home/backups/; change permission to home of backups user"

@@ -1,3 +1,6 @@
+- name: Set the right timezone
+  ansible.builtin.shell: "sudo timedatectl set-timezone Europe/Warsaw"
+
 - name: Create a directory for grafana
   ansible.builtin.file:
     path: /opt/grafana

@@ -1,0 +1,18 @@
+source /scripts/variables
+
+$(rm /var/log/mysql/mysql-bin.*)
+$(mysqldump -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}" --flush-logs  > /tmp/mysqlWp_Full.sql)
+creatingTar=$(tar -cf /backupsUbuntu/$year/$month/$week/$timeFull.tar /var/www/html/* /tmp/mysqlWp_Full.sql)
+
+exist=$(ls /backupsUbuntu/$year/$month/$week | grep $timeFull.tar.gz)
+if [ $exist -ne null ]
+then
+  bash /scripts/ftp.bash /backupsUbuntu/$year/$month/$week/$timeFull.tar.gz /backupsUbuntu/$year/$month/$week/$timeFull.tar.gz
+else
+  gzip /backupsUbuntu/$year/$month/$week/$timeFull.tar
+  
+  bash /scripts/ftp.bash /backupsUbuntu/$year/$month/$week/$timeFull.tar.gz /backupsUbuntu/$year/$month/$week/$timeFull.tar.gz
+fi
+
+$creatingTar
+rm /tmp/mysqlWp_Full.sql

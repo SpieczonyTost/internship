@@ -1,0 +1,37 @@
+HOST="{{ backups_address }}"
+USER="{{ backups_username }}"
+PASSWORD="{{ backups_password }}"
+
+ftp -inv $HOST <<EOF
+user $USER $PASSWORD
+binary
+get /Restored_data.tar
+bye
+EOF
+
+if [ $(pwd) != /]
+then
+    mv $(pwd)/Restored_data.tar /
+fi
+
+tar -x -C / -f /Restored_data.tar
+rm /Restored_data.tar
+mysql -u root -p"{{ mysql_root_password }}" -e "create database "{{ mysql_db }}"" && mysql -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}" < /tmp/mysqlWp_Full.sql && rm /tmp/mysqlWp_Full.sql
+mysqlbinlog /var/log/mysql/mysql-bin.000001 | mysql -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}"
+mysqlbinlog /var/log/mysql/mysql-bin.000002 | mysql -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}"
+mysqlbinlog /var/log/mysql/mysql-bin.000003 | mysql -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}"
+rm /var/log/mysql/mysql-bin.*
+
+# mysqldump -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}" --flush-logs > /tmp/mysqlWp_Full.sql
+ 
+# mysql -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}" < /tmp/mysqlWp_Full.sql
+
+# mysql -u root -p"{{ mysql_root_password }}" -e 'create database "{{ mysql_db }}"'
+
+# mysql -u root -p"{{ mysql_root_password }}" -e 'drop database "{{ mysql_db }}"'
+
+# mysqladmin -u root -p"{{ mysql_root_password }}" flush-logs
+
+# mysqlbinlog /var/log/mysql/mysql-bin.000001 | mysql -u root -p"{{ mysql_root_password }}" "{{ mysql_db }}"
+
+#apt install vsftpd

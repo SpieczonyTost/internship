@@ -1,0 +1,25 @@
+- name: Generate an OpenSSL private key with a different size (2048 bits)
+  community.crypto.openssl_privatekey:
+    path: /etc/ssl/private/nginx-selfsigned.key
+    size: 2048
+
+- name: Generate a Self Signed OpenSSL certificate
+  community.crypto.x509_certificate:
+    path: /etc/ssl/certs/nginx-selfsigned.crt
+    privatekey_path: /etc/ssl/private/nginx-selfsigned.key
+    provider: selfsigned
+
+- name: Generate Diffie-Hellman parameters with the default size (4096 bits)
+  community.crypto.openssl_dhparam:
+    path: /etc/ssl/certs/dhparams.pem
+    size: 2048
+
+- name: Create files in snippets (ssl cerf paths)
+  ansible.builtin.copy:
+    src: self-signed.conf
+    dest: /etc/nginx/snippets/self-signed.conf
+
+- name: Create files in snippets (ssl dhparam)
+  ansible.builtin.copy:
+    src: ssl-params.conf
+    dest: /etc/nginx/snippets/ssl-params.conf

@@ -1,0 +1,5 @@
+source /scripts/variables
+
+creatingYear=$(mkdir /backupsUbuntu/$year)
+$creatingYear
+chown {{backups_username}}:{{backups_username}} /backupsUbuntu/$year
