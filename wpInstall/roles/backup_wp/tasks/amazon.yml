@@ -1,0 +1,77 @@
+- name: Check if wokrs properly
+  ansible.builtin.debug:
+    msg: amazonWp is ready!
+
+- name: Create {{backup_app_root}}
+  ansible.builtin.file:
+    path: "{{backup_app_root}}"
+    recurse: true
+    state: directory
+    owner: root
+    group: root
+    mode: '0744'
+
+- name: Inject scripts
+  ansible.builtin.template:
+      src: clean.bash.j2
+      dest: "{{backup_app_root}}/clean.bash"
+
+- name: Inject scripts
+  ansible.builtin.template:
+      src: config.bash.j2
+      dest: "{{backup_app_root}}/config.bash"
+
+- name: Inject scripts
+  ansible.builtin.template:
+      src: dailyBackup.bash.j2
+      dest: "{{backup_app_root}}/dailyBackup.bash"
+
+- name: Inject scripts
+  ansible.builtin.template:
+      src: newWeek.bash.j2
+      dest: "{{backup_app_root}}/newWeek.bash"
+
+- name: Inject scripts
+  ansible.builtin.template:
+      src: README.md.j2
+      dest: "{{backup_app_root}}/README.md"
+
+- name: Inject scripts
+  ansible.builtin.template:
+      src: restore.bash.j2
+      dest: "{{backup_app_root}}/restore.bash"
+
+- name: Install ftp
+  ansible.builtin.package:
+    name: ftp
+    state: present
+
+- name: Just for safety, do manually once "newWeek.bash" (to form the structure of dirs and evade any mistakes)
+  ansible.builtin.shell: "bash {{backup_app_root}}/newWeek.bash"
+
+- name: Add a weekly cron job
+  ansible.builtin.cron:
+    name: "Create new week directory"
+    minute: "0"
+    hour: "0"
+    day: "*"
+    month: "*"
+    weekday: "1"
+    job: "cd {{backup_app_root}} ; bash {{backup_app_root}}/newWeek.bash"
+    user: root
+
+- name: Add a daily cron job
+  ansible.builtin.cron:
+    name: "Create a daily backup"
+    minute: "1"
+    hour: "0"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    job: "cd {{backup_app_root}} ; bash {{backup_app_root}}/dailyBackup.bash"
+    user: root
+
+- name: Restart cron service
+  ansible.builtin.systemd:
+    state: restarted
+    name: crond

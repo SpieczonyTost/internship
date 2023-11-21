@@ -1,0 +1,87 @@
+- name: Check if wokrs properly
+  ansible.builtin.debug:
+    msg: ubuntuBak is ready!
+
+- name: Check if packages were collected successfully
+  ansible.builtin.debug:
+    var: ansible_facts.packages
+
+- name: Ensure group "{{backup_user}}" exists
+  ansible.builtin.group:
+    name: "{{backup_user}}"
+    state: present
+
+- name: Add user for ftp
+  ansible.builtin.user:
+    name: "{{backup_user}}"
+    group: "{{backup_user}}"
+    password: "{{backup_hashed_password}}"
+    shell: /bin/bash
+
+- name: Install vsftpd
+  ansible.builtin.package:
+    name: vsftpd
+    state: present
+
+- name: Copy /etc/vsftpd.conf
+  ansible.builtin.copy:
+    src: vsftpd.conf
+    dest: /etc/vsftpd.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: "chmod a-w /home/backups/; change permission to home of backups user"
+  ansible.builtin.file:
+    path: "/home/{{backup_user}}"
+    owner: "{{backup_user}}"
+    group: "{{backup_user}}"
+    mode: "555"
+
+- name: Create "{{backup_app_root}}"
+  ansible.builtin.file:
+    path: "{{backup_app_root}}"
+    recurse: true
+    state: directory
+    owner: "{{backup_user}}"
+    group: "{{backup_user}}"
+    mode: '0744'
+  
+- name: Include handlers (daemon reload, restart vsftpd)
+  ansible.builtin.include_tasks:
+    file: roles/backup/handlers/main.yml
+
+- name: copy /etc/hosts.deny (as a template)
+  ansible.builtin.template:
+    src: hosts.deny.j2
+    dest: /etc/hosts.deny
+
+- name: copy /etc/hosts.allow (as a template)
+  ansible.builtin.template:
+    src: hosts.allow.j2
+    dest: /etc/hosts.allow
+
+- name: Include handelers (daemon reload, restart vsftpd)
+  ansible.builtin.include_tasks:
+    file: roles/backup/handlers/main.yml
+
+- name: Change the privillages (recursively) to "{{backup_app_root}}" (give backups_user ownership)
+  ansible.builtin.file:
+    path: "/home/{{backup_user}}"
+    owner: "{{backup_user}}"
+    group: "{{backup_user}}"
+    mode: "555"
+
+- name: Copy /etc/ssh/sshd_config
+  ansible.builtin.copy:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: restart sshd
+  ansible.builtin.systemd:
+    name: sshd
+    state: restarted
+  tags: [ System ]

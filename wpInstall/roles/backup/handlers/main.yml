@@ -1,0 +1,10 @@
+- name: Daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+  tags: [ System ]
+
+- name: Restart vsftpd
+  ansible.builtin.systemd:
+    name: vsftpd
+    state: restarted
+  tags: [ System ]
