@@ -29,7 +29,7 @@ else
 	echo
 	echo "***** you inserted a wrong year to restore from *****"
 	echo
-	/bin/bash /etc/bak/restore.bash
+	/bin/bash "{{backup_app_root}}/restore.bash"
         exit 1
 fi
 
@@ -74,27 +74,27 @@ else
         echo
         echo "***** you inserted a wrong week to restore from *****"
         echo
-        /bin/bash /etc/bak/restore.bash
+        /bin/bash "{{backup_app_root}}/restore.bash"
         exit 1
 fi
 
 # if week is previous, download it
-if [ "$week" -ne "$weekCounter" ]; then
-	echo "***** download started... *****"
-		
-	cd "$script_dir/backups/$year/$week"
+# if [ "$week" -ne "$weekCounter" ]; then
+echo "***** download started... *****"
+	
+cd "$script_dir/backups/$year/$week"
 
-	ftp -inv $HOST <<EOF
+ftp -inv $HOST <<EOF
 user $USER $PASSWORD
 cd "$script_dir/backups/$year/$week"
 binary
 mget *
 bye
 EOF
-	cd "$script_dir"
+cd "$script_dir"
 
-	#rsync -d -r -e "ssh -o StrictHostKeyChecking=no" backups@192.168.50.105:/$script_dir/backups/$year/$week /$script_dir/backups/$year/$week
-fi
+#rsync -d -r -e "ssh -o StrictHostKeyChecking=no" backups@192.168.50.105:/$script_dir/backups/$year/$week /$script_dir/backups/$year/$week
+# fi
 
 # day input
 
@@ -109,7 +109,7 @@ echo "***** possible day choices *****"
 echo
 for i in $day_dir
 do
-	if [[ $i == *.tar ]]; then
+	if [[ $i == *.gz ]]; then
         day_list+=("$i")
 	counter_list+=("$tmp")
         echo "$i"
@@ -134,7 +134,7 @@ else
         echo
         echo "***** you inserted a wrong day to restore from *****"
         echo
-        /bin/bash /etc/bak/restore.bash
+        /bin/bash "{{backup_app_root}}/restore.bash"
         exit 1
 fi
 
@@ -160,29 +160,48 @@ if [[ $decision == "y" ]] || [[ $decision == "Y" ]]; then
 	echo
 
 	# get the array with numbers to restore
-	counter_list_length="${#counter_list[@]}"
+	counter_list_length={% raw %}"${#counter_list[@]}"{% endraw %}
+
+
 	for i in ${counter_list[*]}
 	do
 		if [ "$day" -ge "$i" ]; then
 			# echo this guy to a variable
+			gzip_to_recover=$( echo $script_dir/backups/$year/$week/*_$i.tar.gz)
+
+			# undo gzip
+			gzip -d $gzip_to_recover
+
 			tar_to_recover=$( echo $script_dir/backups/$year/$week/*_$i.tar)
+
+			# un tar an archive
 			tar -b 64 --directory=/ --extract --verbose --file=$tar_to_recover --listed-incremental=/dev/null
 
 			# bring back mysql
 			if [ "$i" -eq 0 ]; then
-				mysql -u root -p1234 -e "drop database wordpress"
-				mysql -u root -p1234 -e "create database wordpress"
+				mysql -u root -p{{mysql_root_password}} -e "drop database wordpress"
+				mysql -u root -p{{mysql_root_password}} -e "create database wordpress"
 
-				mysql -u root -p1234 wordpress < /etc/bak/mariadb/full_backup$week.sql
+				mysql -u root -p{{mysql_root_password}} wordpress < {{backup_app_root}}/mariadb/full_backup$week.sql
 			else
-				bin_file=$( echo /etc/bak/mariadb_logs/mysql-bin.*$i )
-				mysqlbinlog $bin_file | mysql -u root -p1234 wordpress
+				bin_file=$( echo "{{backup_app_root}}/mariadb_logs/mysql-bin.*$i" )
+				mysqlbinlog $bin_file | mysql -u root -p{{mysql_root_password}} wordpress
 			fi
+
+			# pack backups back to gzip
+			gzip $tar_to_recover
 
 		fi
 	done
-	# delete the unwanted backups from wpServer machine
-	rm -rf "$script_dir/backups/$year/$week/*.tar"
+
+	if [ "$week" -ne "$(cat $weekCounterFile)" ]; then
+		echo "chosen week is not the same as week counter, deleting tars..."
+
+		# delete the unwanted backups from wpServer machine
+		cd $script_dir/backups/$year/$week
+		rm -rf *.tar*		
+
+	fi
 
 else
 	echo
@@ -190,3 +209,5 @@ else
 	echo
 	exit 0
 fi
+
+

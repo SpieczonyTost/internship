@@ -11,8 +11,8 @@ if test -f "$weekCounterFile"; then
         echo "$weekCounter" > $weekCounterFile
 
         # delete the previous week
-        rm -rf $app_dir/"$(($weekCounter - 1))"/*.tar
-	#echo $app_dir/"$(($weekCounter - 1))"/*
+        rm -rf $app_dir/"$(($weekCounter - 1))"/*.tar*
+        rm -rf $app_dir/mariadb/*
 
 else
 	echo 0 > $weekCounterFile
