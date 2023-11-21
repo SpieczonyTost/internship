@@ -7,7 +7,7 @@ boxes = [
        :eth1 => "192.168.50.100",
        :mem => "2048",
        :cpu => "2",
-       :os => "gbailey/amzn2",
+       :os => "ubuntu/focal64",
    }
 
 ]
