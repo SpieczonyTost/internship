@@ -1,5 +1,5 @@
 - name: Installation of wordpress
-  hosts: virtualmachines
+  hosts: cloud
   become: true
   gather_facts: true
   vars_files:
@@ -13,7 +13,6 @@
       tags: [always]
   roles:
     - mysql
-    - ssl_cert
     - nginx
     - php
     - wordpress
@@ -21,57 +20,7 @@
     - nginx_exporter
     - fluentd
     - backup_wp
-
-- name: Installation on backup machine
-  hosts: backups
-  become: true
-  gather_facts: true
-  vars_files:
-    - vars/default.yml
-  vars:
-    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-  pre_tasks:
-    - name: Setting the package manager to auto
-      package_facts:
-        manager: "auto"
-      tags: [always]
-  roles:
-    - backup
-    - debug
-
-- name: Installation of backup machines
-  hosts: backups
-  become: true
-  gather_facts: true
-  vars_files:
-    - vars/default.yml
-  vars:
-    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-  pre_tasks:
-    - name: Setting the package manager to auto
-      package_facts:
-        manager: "auto"
-      tags: [always]
-  roles:
-    - backup
-
-- name: Installation of prometheus
-  hosts: observators
-  become: true
-  gather_facts: true
-  vars_files:
-    - vars/default.yml
-  vars:
-    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-  pre_tasks:
-    - name: Setting the package manager to auto
-      package_facts:
-        manager: "auto"
-      tags: [always]
-  roles:
-    - prometheus
-    - grafana
-    - debug
+    - ssl_cert
 
 # Specific modules only       mysql, php, nginx, wordpress, prometheus, fluentd, grafana, nginx_exporter, node_exporter
 # Specific distro             ubuntu, amazon

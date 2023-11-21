@@ -1,36 +1,8 @@
-virtualmachines:
+cloud:
   hosts:
-    amazon:
-      ansible_host: 192.168.50.100
-    ubuntu:
-      ansible_host: 192.168.50.101
+    ubuntuCloud: 
+      ansible_host: 3.122.136.29
   vars:
     ansible_user: vagrant
     ansible_ssh_private_key_file: ~/.ssh/rsa_key
     ansible_python_interpreter: /usr/bin/python3
-
-observators:
-  hosts:
-    amazonProm:
-      ansible_host: 192.168.50.102
-    ubuntuProm:
-      ansible_host: 192.168.50.103
-  vars:
-    ansible_user: vagrant
-    ansible_ssh_private_key_file: ~/.ssh/rsa_key
-    ansible_python_interpreter: /usr/bin/python3
-
-backups:
-  hosts:
-    ubuntuBak: 
-      ansible_host: 192.168.50.105
-  vars:
-    ansible_user: vagrant
-    ansible_ssh_private_key_file: ~/.ssh/rsa_key
-    ansible_python_interpreter: /usr/bin/python3
-
-allhosts:
-  children:
-    observators:
-    virtualmachines:
-    backups:
