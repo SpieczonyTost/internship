@@ -1,5 +1,0 @@
-groups:
-- name: cpu-node
-  rules:
-  - record: cpu
-    expr: avg by(mode) (1 - rate(node_cpu_seconds_total[30s]))
