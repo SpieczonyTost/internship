@@ -11,7 +11,7 @@
 
 - name: Generate Diffie-Hellman parameters with the default size (4096 bits)
   community.crypto.openssl_dhparam:
-    path: /etc/ssl/certs/dhparams.pem
+    path: /etc/ssl/certs/dhparam.pem
     size: 2048
 
 - name: Create files in snippets (ssl cerf paths)

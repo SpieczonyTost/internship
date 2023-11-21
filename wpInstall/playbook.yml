@@ -13,6 +13,7 @@
       tags: [always]
   roles:
     - mysql
+    - ssl_cert
     - nginx
     - php
     - wordpress
