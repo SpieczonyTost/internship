@@ -19,51 +19,59 @@ sunday=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*) # d
 monday=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday*) # defining backup from monday
 wednesday=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday*) # defining backup from wednesday
 friday=$(ls /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Friday*) # defining backup from friday
-copying=$(cp $sunday Restored_data.tar) # copying full backup in case user wants it
 
 if test -f /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/$restoreDay*
 then
   if [[ "$fileFull" = "Full.tar.gz" ]]
   then
     gzip -d $sunday
-    $copying, $fileFull
-    gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday_Full.tar
+    cp /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday* Restored_data.tar
+    gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*
   else
     echo "$file"
     case "$file" in
       *"Monday.tar.gz")
+        echo "*************************MONDAY**********************************"
         gzip -d /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday*
-        $copying
-        $(tar -A -f Restored_data.tar $monday)
-        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday.tar
+        gzip -d /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*
+        cp /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday* Restored_data.tar
+        $(tar -A -f Restored_data.tar /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday*)
+        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday*
+        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*
       ;;
       *"Wednesday.tar.gz")
+        echo "*************************Wednesday**********************************"
         gzip -d /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday*
         gzip -d /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday*
-        $copying
-        $(tar -A -f Restored_data.tar $monday)
-        $(tar -A -f Restored_data.tar $wednesday)
-        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday.tar
-        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday.tar
+        gzip -d /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*
+        cp /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday* Restored_data.tar
+        $(tar -A -f Restored_data.tar /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday*)
+        $(tar -A -f Restored_data.tar /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday*)
+        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday*
+        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday*
+        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*
       ;;
       *"Friday.tar.gz")
+        echo "*************************Friday**********************************"
         gzip -d /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday*
         gzip -d /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday*
         gzip -d /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Friday*
-        $copying
-        $(tar -A -f Restored_data.tar $monday)
-        $(tar -A -f Restored_data.tar $wednesday)
-        $(tar -A -f Restored_data.tar $friday)
-        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday.tar
-        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday.tar
-        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Friday.tar
+        gzip -d /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*        
+        cp /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday* Restored_data.tar
+        $(tar -A -f Restored_data.tar /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday*)
+        $(tar -A -f Restored_data.tar /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday*)
+        $(tar -A -f Restored_data.tar /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Friday*)
+        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Monday*
+        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Wednesday*
+        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Friday*
+        gzip /backupsUbuntu/$restoreYear/$restoreMonth/$restoreWeek/*Sunday*
     esac
   fi
 else
 echo "no such file"
 fi
 
-$(chown "{{backups_username}}":"{{backups_username}}" /Restored_data.tar)
+$(chown "{{backups_username}}":"{{backups_username}}" Restored_data.tar)
 
 # $(tar -x -C / -f Restored_data.tar)
 # $(mysql -u root -p1234 -e "create database wordpress" && mysql -u root -p1234 wordpress --flush-logs < /tmp/mysqlWp_Full.sql && rm /tmp/mysqlWp_Full.sql)

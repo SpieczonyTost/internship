@@ -5,7 +5,7 @@ creatingTar=$(tar -cf /backupsUbuntu/$year/$month/first.tar /var/www/html/* /tmp
 gzip /backupsUbuntu/$year/$month/first.tar
 
 exist=$(ls /backupsUbuntu/$year/$month/$week | grep first.tar.gz)
-if [ $exist != null ]
+if [ $exist -ne null ]
 then
   bash /scripts/ftp.bash /backupsUbuntu/$year/$month/$week/first.tar.gz /backupsUbuntu/$year/$month/$week/first.tar.gz
 else

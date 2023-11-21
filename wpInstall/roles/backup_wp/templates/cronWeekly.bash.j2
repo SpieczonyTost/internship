@@ -7,7 +7,7 @@ gzip -d /backupsUbuntu/$year/$month/$week/$lastBackup
 difference=$(find /var/www/html -type f -newer /backupsUbuntu/$year/$month/$week/$lastBackup -print0 | tar -cf /backupsUbuntu/$year/$month/$week/$time.tar -T - /var/log/mysql/$flushLog)
 
 exist=$(ls /backupsUbuntu/$year/$month/$week | grep $time.tar.gz)
-if [ $exist != null ]
+if [ $exist -ne null ]
 then
   bash /scripts/ftp.bash /backupsUbuntu/$year/$month/$week/$time.tar.gz /backupsUbuntu/$year/$month/$week/$time.tar.gz
 else
