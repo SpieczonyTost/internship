@@ -1,7 +1,7 @@
 cloud:
   hosts:
     ubuntuCloud: 
-      ansible_host: 3.122.136.29
+      ansible_host: 192.168.50.100
   vars:
     ansible_user: vagrant
     ansible_ssh_private_key_file: ~/.ssh/rsa_key

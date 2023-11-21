@@ -16,11 +16,7 @@
     - nginx
     - php
     - wordpress
-    - node_exporter
-    - nginx_exporter
-    - fluentd
-    - backup_wp
-    - ssl_cert
+    # - ssl_cert
 
 # Specific modules only       mysql, php, nginx, wordpress, prometheus, fluentd, grafana, nginx_exporter, node_exporter
 # Specific distro             ubuntu, amazon
