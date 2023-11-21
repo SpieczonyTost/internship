@@ -1,6 +1,0 @@
-year=$(date +"%Y")
-month=$(date +"%m_%B")
-day=$(date +"%j")
-week=$(($day / 7))
-time=$(date +"%d_%A")
-timeFull=$(date +"%d_%A")_Full
