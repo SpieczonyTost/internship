@@ -1,0 +1,7 @@
+- name: playbook
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+  hosts: client
+  become: true
+  roles:
+    - python3
