@@ -1,11 +1,28 @@
-- name: Choosing Ubuntu
-  ansible.builtin.import_tasks:
-    file: ubuntu.yml
-  when: (ansible_facts['distribution'] == 'Ubuntu')
-  tags: [ nginx, ubuntu ]
+- name: Check if packages were collected successfully
+  ansible.builtin.debug:
+    var: ansible_facts.packages['nginx']
 
-- name: Choosing Amazon
-  ansible.builtin.import_tasks:
-    file: amazon.yml
-  when: (ansible_facts['distribution'] == 'Amazon')   
-  tags: [ nginx, amazon ]
+- name: Update repositories
+  ansible.builtin.yum: 
+    name: yum
+    update_cache: yes
+    state: latest
+
+- name: Creating nginx.repo
+  ansible.builtin.copy:
+    src: nginx.repo
+    dest: /etc/yum.repos.d/nginx.repo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install nginx
+  ansible.builtin.yum:
+    name: nginx
+    update_cache: yes
+    state: latest
+  when: "ansible_facts.packages['nginx'] is undefined"
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/nginx/handlers/main.yml

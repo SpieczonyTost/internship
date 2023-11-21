@@ -1,11 +1,94 @@
-- name: Choosing Ubuntu
-  ansible.builtin.import_tasks:
-    file: ubuntu.yml
-  when: (ansible_facts['distribution'] == 'Ubuntu')
-  tags: [ mysql, ubuntu ]
+- name: Check if packages were collected successfully
+  ansible.builtin.debug:
+    var: ansible_facts.packages['mariadb']
 
-- name: Choosing Amazon
-  ansible.builtin.import_tasks:
-    file: amazon.yml
-  when: (ansible_facts['distribution'] == 'Amazon')   
-  tags: [ mysql, amazon ]
+- name: Update repositories
+  ansible.builtin.yum: 
+    name: yum
+    update_cache: yes
+    state: latest
+
+- name: Install mariaDB
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+  loop: [ 'mariadb-server-5.5.68', 'mariadb-5.5.68' ]
+  when: "ansible_facts.packages.mariadb is undefined"
+
+- name: Install python3-pip
+  ansible.builtin.yum:
+    name: python3-pip-20.2.2 
+    update_cache: yes
+    state: latest
+  when: "ansible_facts.packages.python3 is undefined"
+
+- name: Install pexpect
+  ansible.builtin.shell:
+    cmd: python3 -m pip install pexpect
+
+- name: Install PyMySQL
+  ansible.builtin.shell:
+    cmd: python3 -m pip install PyMySQL==1.1.0
+
+- name: Start mariadb --log-bin[=name]
+  ansible.builtin.service:
+    name: mariadb
+    state: started
+
+- name: Waits for port 3306 (mysql)
+  ansible.builtin.wait_for:
+    port: 3306
+    delay: 8
+    state: started
+
+- name: secure mariadb
+  become: yes
+  ansible.builtin.expect:
+    command: mysql_secure_installation
+    responses:
+      'Enter current password for root': ''
+      'Set root password': 'y'
+      'New password': '{{ mysql_root_password }}'
+      'Re-enter new password': '{{ mysql_root_password }}'
+      'Remove anonymous users': 'y'
+      'Disallow root login remotely': 'y'
+      'Remove test database': 'y'
+      'Reload privilege tables now': 'y'
+    timeout: 1
+    echo: yes
+  register: secure_mariadb
+  failed_when: "'... Failed!' in secure_mariadb"
+  when: "ansible_facts.packages.mariadb is undefined"
+  
+- name: Creates database for WordPress
+  ansible.builtin.mysql_db:
+    name: "{{ mysql_db }}"
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  when: "ansible_facts.packages.mariadb is undefined"
+
+- name: Create MySQL user for WordPress
+  ansible.builtin.mysql_user:
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_password }}"
+    priv: "{{ mysql_db }}.*:ALL,GRANT"
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  when: "ansible_facts.packages.mariadb is undefined"
+
+# enable bin logs
+- name: copy the file /usr/lib/systemd/system/mariadb.service
+  ansible.builtin.template:
+    src: amazon_mariadb.service
+    dest: /usr/lib/systemd/system/mariadb.service
+
+- name: systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/mysql/handlers/main.yml

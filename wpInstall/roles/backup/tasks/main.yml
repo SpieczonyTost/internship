@@ -1,4 +1,0 @@
-- name: Choosing Ubuntu
-  ansible.builtin.import_tasks:
-    file: ubuntu.yml
-  tags: [ backup, ubuntu ]
