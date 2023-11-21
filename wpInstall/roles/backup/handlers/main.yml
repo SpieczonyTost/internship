@@ -1,14 +1,10 @@
-- name: Force systemd to reread configs
+- name: Daemon-reload
   ansible.builtin.systemd:
     daemon_reload: true
+  tags: [ System ]
 
-- name: Enable service vsftpd and ensure it is not masked
+- name: Restart vsftpd
   ansible.builtin.systemd:
-    name: vsftpd.service
-    enabled: true
-    masked: no
-
-- name: Restart service vsftpd, in all cases
-  ansible.builtin.systemd:
-    name: vsftpd.service
+    name: vsftpd
     state: restarted
+  tags: [ System ]

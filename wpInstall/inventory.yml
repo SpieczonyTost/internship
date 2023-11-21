@@ -22,7 +22,7 @@ observators:
 
 backups:
   hosts:
-    ubuntuBak:
+    ubuntuBak: 
       ansible_host: 192.168.50.105
   vars:
     ansible_user: vagrant
@@ -33,3 +33,4 @@ allhosts:
   children:
     observators:
     virtualmachines:
+    backups:

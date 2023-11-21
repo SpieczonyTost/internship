@@ -1,8 +1,26 @@
 - name: playbook
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-  hosts: virtualmachines
+  hosts: client
   become: true
-  gather_facts: true
   roles:
     - python3
+  tags: [client]
+
+- name: playbook
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+  hosts: prom
+  become: true
+  roles:
+    - python3
+  tags: [prom]
+
+- name: playbook
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+  hosts: backup
+  become: true
+  roles:
+    - python3
+  tags: [backup]

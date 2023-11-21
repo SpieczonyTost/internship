@@ -31,7 +31,7 @@
   ansible.builtin.shell:
     cmd: python3 -m pip install PyMySQL==1.1.0
 
-- name: Start mysql
+- name: Start mariadb --log-bin[=name]
   ansible.builtin.service:
     name: mariadb
     state: started
@@ -78,6 +78,16 @@
     login_user: root
     login_password: "{{ mysql_root_password }}"
   when: "ansible_facts.packages.mariadb is undefined"
+
+# enable bin logs
+- name: copy the file /usr/lib/systemd/system/mariadb.service
+  ansible.builtin.template:
+    src: amazon_mariadb.service
+    dest: /usr/lib/systemd/system/mariadb.service
+
+- name: systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
 
 - name: Include handlers
   ansible.builtin.include_tasks:
