@@ -1,0 +1,35 @@
+- name: Add the user 'node_exporter'
+  ansible.builtin.user:
+    name: node_exporter
+
+- name: Create a directory for node_exporter
+  ansible.builtin.file:
+    path: /opt/node_exporter
+    state: directory
+    recurse: true
+    owner: node_exporter
+    group: node_exporter
+
+- name: Check if node_exporter is downloaded
+  ansible.builtin.shell:
+    cmd: "ls /opt/node_exporter"
+  register: node_exporter
+
+- name: Downloading and extracting node_exporter
+  ansible.builtin.unarchive:
+    src: https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
+    dest: /opt/node_exporter/
+    remote_src: true
+    owner: node_exporter
+    group: node_exporter
+    extra_opts: [--strip-components=1]
+  when: "node_exporter.stdout == ''"
+
+- name: Create daemon for node_exporter
+  ansible.builtin.template:
+    src: node_exporter.service.j2
+    dest: /etc/systemd/system/node_exporter.service
+
+- name: Include handlers
+  ansible.builtin.include_tasks:
+    file: roles/node_exporter/handlers/main.yml

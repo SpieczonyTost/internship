@@ -1,32 +1,32 @@
 - name: Check if already installed
   ansible.builtin.debug:
-    msg: "{{ ansible_facts.packages['php-fpm'] | length }} versions of php-fpm are installed!"
-  when: "'php-fpm' in ansible_facts.packages"
+    msg: "{{ ansible_facts.ohai_packages['php-fpm'] | length }} versions of php-fpm are installed!"
+  when: "'php-fpm' in ansible_facts.ohai_packages"
 
 - name: Ensure that ubuntu's universe repo is added
   ansible.builtin.shell: add-apt-repository universe
-  when: "not 'php-fpm' in ansible_facts.packages"
+  when: "not 'php-fpm' in ansible_facts.ohai_packages"
 
 - name: Update repositories
   ansible.builtin.apt:
     update_cache: yes
-  when: "not 'php-fpm' in ansible_facts.packages"
+  when: "not 'php-fpm' in ansible_facts.ohai_packages"
 
 - name: Install the right php-fpm package
   ansible.builtin.package: 
     name: php-fpm=2:7.4+75
-  when: "not 'php-fpm' in ansible_facts.packages"
+  when: "not 'php-fpm' in ansible_facts.ohai_packages"
 
 - name: Install the right php-mysql package
   ansible.builtin.package: 
     name: php-mysql=2:7.4+75  
-  when: "not 'php-mysql' in ansible_facts.packages"
+  when: "not 'php-mysql' in ansible_facts.ohai_packages"
 
 - name: Restart php-fpm
   ansible.builtin.systemd:
     name: php7.4-fpm.service
     state: restarted
-  when: "not 'php-fpm' in ansible_facts.packages"
+  when: "not 'php-fpm' in ansible_facts.ohai_packages"
 
 - name: Reload php-fpm
   ansible.builtin.systemd:
