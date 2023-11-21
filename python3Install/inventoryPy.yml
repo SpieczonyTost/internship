@@ -16,15 +16,6 @@ prom:
     ansible_ssh_private_key_file: ~/.ssh/rsa_key
     ansible_python_interpreter: /usr/bin/python2
 
-backup:
-  hosts:
-    amazonBak:
-      ansible_host: 192.168.50.104
-  vars:
-    ansible_user: vagrant
-    ansible_ssh_private_key_file: ~/.ssh/rsa_key
-    ansible_python_interpreter: /usr/bin/python2
-
 virtualmachines:
   children:
     backup:
