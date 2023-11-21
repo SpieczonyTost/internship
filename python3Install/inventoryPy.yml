@@ -1,11 +1,36 @@
-virtualmachines:
+client:
   hosts:
     amazon:
       ansible_host: 192.168.50.100
+  vars:
+    ansible_user: vagrant
+    ansible_ssh_private_key_file: ~/.ssh/rsa_key
+    ansible_python_interpreter: /usr/bin/python2
+
+prom:
+  hosts:
     amazonProm:
       ansible_host: 192.168.50.102
-    amazonBak: 
+  vars:
+    ansible_user: vagrant
+    ansible_ssh_private_key_file: ~/.ssh/rsa_key
+    ansible_python_interpreter: /usr/bin/python2
+
+backup:
+  hosts:
+    amazonBak:
       ansible_host: 192.168.50.104
+  vars:
+    ansible_user: vagrant
+    ansible_ssh_private_key_file: ~/.ssh/rsa_key
+    ansible_python_interpreter: /usr/bin/python2
+
+virtualmachines:
+  children:
+    backup:
+    prom:
+    client:
+
   vars:
     ansible_user: vagrant
     ansible_ssh_private_key_file: ~/.ssh/rsa_key
