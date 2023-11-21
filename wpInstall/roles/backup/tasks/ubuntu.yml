@@ -29,12 +29,10 @@
 
 - name: Overrite the vsftpd.conf
   ansible.builtin.copy:
-    state: present
     src: vsftpd.conf
     dest: /etc/vsftpd.conf
     owner: root
     group: root
-
 
 - name: Create folders for scripts
   ansible.builtin.file:

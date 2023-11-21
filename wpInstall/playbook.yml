@@ -13,7 +13,6 @@
       tags: [always]
   roles:
     - mysql
-    - ssl_cert
     - nginx
     - php
     - wordpress
@@ -21,6 +20,7 @@
     - nginx_exporter
     - fluentd
     - backup_wp
+    - ssl_cert
 
 - name: Installation on backup machine
   hosts: backups

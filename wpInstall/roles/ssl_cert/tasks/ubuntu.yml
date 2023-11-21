@@ -1,3 +1,11 @@
+- name: Overrite the default file
+  ansible.builtin.template:
+    src: default.j2
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: '0644'
+
 - name: Generate an OpenSSL private key with a different size (2048 bits)
   community.crypto.openssl_privatekey:
     path: /etc/ssl/private/nginx-selfsigned.key
