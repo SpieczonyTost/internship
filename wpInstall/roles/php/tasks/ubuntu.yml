@@ -3,10 +3,6 @@
     msg: "{{ ansible_facts.packages['php-fpm'] | length }} versions of php-fpm are installed!"
   when: "'php-fpm' in ansible_facts.packages"
 
-- name: Ensure that ubuntu's universe repo is added
-  ansible.builtin.shell: add-apt-repository universe
-  when: "not 'php-fpm' in ansible_facts.packages"
-
 - name: Update repositories
   ansible.builtin.apt:
     update_cache: yes
