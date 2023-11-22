@@ -1,10 +1,10 @@
 - name: Check the codename
-  ansible.builtin.shell: "lsb_release -sc"
+  ansible.builtin.shell: lsb_release -sc
   register: codename
 
 - name: Debug
   ansible.builtin.debug:
-    var: "{{codename}}"
+    var: codename.stdout
 
 # - name: Generate an OpenSSL private key with a different size (2048 bits)
 #   community.crypto.openssl_privatekey:
