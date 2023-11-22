@@ -8,6 +8,7 @@
     owner: root
     group: root
     mode: '0755'
+  tags: [ ssl ]
 
 - name: Create a directory /etc/nginx/snippets
   ansible.builtin.file:
@@ -16,36 +17,43 @@
     owner: root
     group: root
     mode: '0755'
+  tags: [ ssl ]
 
 - name: Install cryptography python package
   ansible.builtin.pip:
     name: cryptography
+  tags: [ ssl ]
 
 - name: Generate an OpenSSL private key with a different size (2048 bits)
   community.crypto.openssl_privatekey:
     path: /etc/ssl/private/nginx_selfsigned.key
     size: 2048
+  tags: [ ssl ]
 
 - name: Generate a Self Signed OpenSSL certificate
   community.crypto.x509_certificate:
     path: /etc/ssl/certs/nginx_selfsigned.crt
     privatekey_path: /etc/ssl/private/nginx_selfsigned.key
     provider: selfsigned
+  tags: [ ssl ]
 
 - name: Generate Diffie-Hellman parameters with the default size (4096 bits)
   community.crypto.openssl_dhparam:
     path: /etc/ssl/certs/dhparam.pem
     size: 2048
+  tags: [ ssl ]
 
 - name: Copy /etc/nginx/snippets/self-signed.conf
   ansible.builtin.template:
     src: self-signed.conf.j2
     dest: /etc/nginx/snippets/self-signed.conf
+  tags: [ ssl ]
 
 - name: Copy /etc/nginx/conf.d/default.conf
   ansible.builtin.template:
     src: default.conf.j2
     dest: /etc/nginx/conf.d/default.conf
+  tags: [ ssl ]
 
 - name: Copy ssl-params.conf
   ansible.builtin.copy:
@@ -54,11 +62,13 @@
     owner: root
     group: root
     mode: 0644
+  tags: [ ssl ]
 
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/ssl_cert/handlers/main.yml
-
+  tags: [ ssl ]
+  
 
 # or prompt answers: 
 # in shell:

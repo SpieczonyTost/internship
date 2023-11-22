@@ -1,8 +1,14 @@
 server {
     listen       80;
-    server_name  "{{wp_url}}";
+    server_name  "{{wp_url}}" "{{wp_url_no_www}}";
     return 301 https://$server_name$request_uri;
 }
+
+server {
+    # Permanent redirect to www
+    server_name "{{ wp_url_no_www }}";
+    rewrite ^/(.*)$ https://{{wp_url}}$request_uri permanent;
+ }
 
 server {
 

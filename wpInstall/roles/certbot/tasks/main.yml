@@ -1,0 +1,24 @@
+- name: Allow all access to tcp port 80
+  community.general.ufw:
+    state: enabled
+    rule: allow
+    port: '80'
+    proto: tcp
+
+- name: Allow all access to tcp port 443
+  community.general.ufw:
+    state: enabled
+    rule: allow
+    port: '443'
+    proto: tcp
+
+# sudo yum install pip3
+# sudo amazon-linux-extras install epel
+# sudo yum install certbot certbot-nginx
+# systemctl stop nginx
+# certbot certonly --standalone --noninteractive --agree-tos --email "{{ wp_email }}" -d "{{ certbot_address }}"
+# systemctl restart nginx
+
+# wget https://dev.mysql.com/get/mysql80-community-release-el9-3.noarch.rpm
+# dnf install mysql80-community-release-el9-3.noarch.rpm
+# sudo dnf install mysql-community-server

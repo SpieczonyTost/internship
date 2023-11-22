@@ -1,33 +1,33 @@
 - name: Update repositories
-  ansible.builtin.yum: 
-    name: yum
+  ansible.builtin.dnf: 
+    name: dnf
     update_cache: yes
     state: latest
 
-- name: Install extras
-  ansible.builtin.yum:
-    name: amazon-linux-extras
-    update_cache: yes
-    state: latest
+# - name: Install extras
+#   ansible.builtin.dnf:
+#     name: amazon-linux-extras
+#     update_cache: yes
+#     state: latest
 
-- name: Enabling php7.4
-  ansible.builtin.command:
-    cmd: amazon-linux-extras enable php7.4
+# - name: Enabling php7.4
+#   ansible.builtin.command:
+#     cmd: amazon-linux-extras enable php7.4
 
-- name: Disabling php5.4
-  ansible.builtin.command:
-    cmd: amazon-linux-extras disable php5.4
+# - name: Disabling php5.4
+#   ansible.builtin.command:
+#     cmd: amazon-linux-extras disable php5.4
 
 - name: Check if packages were collected successfully
   ansible.builtin.debug:
     var: ansible_facts.packages['php']
 
 - name: Install php
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ item }}"
     update_cache: yes
     state: latest
-  loop: [ php-cli-7.4.33, php-pdo-7.4.33, php-fpm-7.4.33, php-json-7.4.33, php-mysqlnd-7.4.33, php-7.4.33, php-gd-7.4.33 ]
+  loop: [ php-cli, php-pdo, php-fpm, php-json, php-mysqlnd, php, php-gd ]
 
 - name: Changing www.conf
   ansible.builtin.copy:

@@ -2,6 +2,7 @@
   ansible.builtin.shell:
     cmd: "ls /usr/share/nginx/html"
   register: wordpress_tar
+  tags: [ wordpress ]
 
 - name: Extract wordpress arch
   ansible.builtin.unarchive:
@@ -11,7 +12,7 @@
     owner: nginx
     group: nginx
     extra_opts: [--strip-components=1]
-  when: "wordpress_tar.stdout == '50x.html\nindex.html'"
+  tags: [ wordpress ]
 
 - name: Create a directory for wordpress
   ansible.builtin.file:
@@ -21,23 +22,27 @@
     owner: nginx
     group: nginx
     mode: 0644
+  tags: [ wordpress ]
 
 - name: Copy file to host
   ansible.builtin.template:
     src: wp-config.php.j2
     dest: /usr/share/nginx/html/wp-config.php
+  tags: [ wordpress ]
 
 - name: Checking if wordpressCli was extracted
   ansible.builtin.shell:
     cmd: "ls /tmp/"
   register: wordpressCli
+  tags: [ wordpress ]
 
 - name: Download WP cli
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
     dest: /tmp/
   when: "wordpressCli != '/tmp/wp-cli.phar'"
-
+  tags: [ wordpress ]
+  
 - name: Renaming and changing rights
   ansible.builtin.copy:
     src: /tmp/wp-cli.phar
@@ -46,18 +51,15 @@
     owner: nginx
     group: nginx
     remote_src: true
+  tags: [ wordpress ] 
 
 - name: WP core installation
-  ansible.builtin.command: "sudo -u nginx /usr/local/bin/wp core install --url={{ wp_url }} --title={{ wp_title }} --admin_name={{ wp_admin }} --admin_password={{ wp_password }} --admin_email={{ wp_email }}"
+  ansible.builtin.shell: "sudo -u nginx wp core install --url={{ wp_url }} --title={{ wp_title }} --admin_name={{ wp_admin }} --admin_password={{ wp_password }} --admin_email={{ wp_email }}"
   args:
     chdir: "/usr/share/nginx/html/"
-
-- name: Install WP plugins
-  command: "sudo -u nginx /usr/local/bin/wp plugin install {{ item }} --activate"
-  loop: [ calculated-fields-form ]
-  args:
-    chdir: "/usr/share/nginx/html/"
+  tags: [ wordpress ]
 
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/wordpress/handlers/main.yml
+  tags: [ wordpress ]

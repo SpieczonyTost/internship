@@ -7,8 +7,9 @@ mysql_db_prefix: wp_
 
 
 # Wordpress Settings
-wp_url: "192.168.50.100"      # These addresses are used not only in WP,
-wp_title: "amazon.com"        # and make sure if they are domain names that they can be seen from the internet
+wp_url: "www.pawel.dev.zdt.io"      # These addresses are used not only in WP,
+wp_url_no_www: "pawel.dev.zdt.io"
+wp_title: "amazon.LIVE.com"        # and make sure if they are domain names that they can be seen from the internet
 wp_admin: "admin"
 wp_password: "1234"
 wp_email: "zrobione.com@zdt.io"
