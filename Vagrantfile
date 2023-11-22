@@ -7,7 +7,7 @@ boxes = [
        :eth1 => "192.168.50.110",
        :mem => "2048",
        :cpu => "2",
-       :os => "generic/ubuntu2204",
+       :os => "gusztavvargadr/ubuntu-server-2204-lts",
    }
 
 ]
@@ -23,6 +23,7 @@ elsif  FileTest.exists?(dsa_key)
 end
 
 Vagrant.configure(2) do |config|
+ config.vm.box_version = "2204.0.2310"
  boxes.each do |opts|
    config.vm.define opts[:name] do |config|
      config.vm.box = opts[:os]
