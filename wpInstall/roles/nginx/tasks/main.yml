@@ -8,4 +8,4 @@
   ansible.builtin.import_tasks:
     file: amazon.yml
   when: (ansible_facts['distribution'] == 'Amazon')   
-  tags: [ nginx, amazon ]
+  tags: [ nginx, amazon, never ]
