@@ -4,10 +4,10 @@
 boxes = [
    {
        :name => "ubuntuCloud",
-       :eth1 => "192.168.50.100",
+       :eth1 => "192.168.50.110",
        :mem => "2048",
        :cpu => "2",
-       :os => "ubuntu/focal64",
+       :os => "generic/ubuntu2204",
    }
 
 ]
