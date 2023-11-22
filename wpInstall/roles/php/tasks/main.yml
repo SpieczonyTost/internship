@@ -3,6 +3,7 @@
     name: dnf
     update_cache: yes
     state: latest
+  tags: [ php ]
 
 # - name: Install extras
 #   ansible.builtin.dnf:
@@ -21,6 +22,7 @@
 - name: Check if packages were collected successfully
   ansible.builtin.debug:
     var: ansible_facts.packages['php']
+  tags: [ php ]
 
 - name: Install php
   ansible.builtin.dnf:
@@ -28,6 +30,7 @@
     update_cache: yes
     state: latest
   loop: [ php-cli, php-pdo, php-fpm, php-json, php-mysqlnd, php, php-gd ]
+  tags: [ php ]
 
 - name: Changing www.conf
   ansible.builtin.copy:
@@ -36,6 +39,7 @@
     owner: root
     group: root
     mode: 0644
+  tags: [ php ]
 
 - name: Changing default.conf
   ansible.builtin.copy:
@@ -44,23 +48,28 @@
     owner: root
     group: root
     mode: 0644
+  tags: [ php ]
 
 - name: Start php-fpm
   ansible.builtin.service:
     name: php-fpm
     state: started
+  tags: [ php ]
 
 - name: Changing rights
   ansible.builtin.file: 
     path: /usr/share/nginx/html/
     owner: nginx
     group: nginx
+  tags: [ php ]
 
 - name: Restart nginx
   ansible.builtin.service:
     name: nginx
     state: restarted
+  tags: [ php ]
 
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/php/handlers/main.yml
+  tags: [ php ]

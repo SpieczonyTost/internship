@@ -4,21 +4,41 @@
     rule: allow
     port: '80'
     proto: tcp
-
+  tags: [ certbot ]
+  
 - name: Allow all access to tcp port 443
   community.general.ufw:
     state: enabled
     rule: allow
     port: '443'
     proto: tcp
+  tags: [ certbot ]
+
+- name: install pip3
+  ansible.builtin.shell:
+    cmd: pip3 install certbot certbot-nginx cryptography==41.0.5
+  tags: [ certbot ]
+
+- name: stop nginx
+  ansible.builtin.service:
+    name: nginx
+    state: stopped
+  tags: [ certbot ]
+
+- name: install pip3
+  ansible.builtin.shell:
+    cmd: certbot --nginx --noninteractive --agree-tos --email "{{ wp_email }}" -d "{{ wp_url }}"
+  tags: [ certbot ]
+
+- name: restart nginx
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+  tags: [ certbot ]
 
 # sudo yum install pip3
-# sudo amazon-linux-extras install epel
-# sudo yum install certbot certbot-nginx
+# pip3 install certbot certbot-nginx
+# pip3 install cryptography==41.0.5
 # systemctl stop nginx
-# certbot certonly --standalone --noninteractive --agree-tos --email "{{ wp_email }}" -d "{{ certbot_address }}"
+# certbot --nginx --noninteractive --agree-tos --email "{{ wp_email }}" -d "{{ wp_url }}"
 # systemctl restart nginx
-
-# wget https://dev.mysql.com/get/mysql80-community-release-el9-3.noarch.rpm
-# dnf install mysql80-community-release-el9-3.noarch.rpm
-# sudo dnf install mysql-community-server

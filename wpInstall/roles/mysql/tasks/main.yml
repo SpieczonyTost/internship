@@ -1,12 +1,14 @@
 - name: Check if packages were collected successfully
   ansible.builtin.debug:
     var: ansible_facts.packages['mariadb105']
+  tags: [ mysql ]
 
 - name: Update repositories
   ansible.builtin.dnf: 
     name: dnf
     update_cache: yes
     state: latest
+  tags: [ mysql ]
 
 - name: Install mariaDB
   ansible.builtin.dnf:
@@ -15,32 +17,38 @@
     state: latest
   loop: [ 'mariadb105-server', 'mariadb105' ]
   when: "ansible_facts.packages.mariadb105 is undefined"
+  tags: [ mysql ]
 
 - name: Install python3-pip
   ansible.builtin.dnf:
     name: python3-pip
     update_cache: yes
     state: latest
+  tags: [ mysql ]
 
 - name: Install pexpect
   ansible.builtin.shell:
     cmd: python3 -m pip install pexpect
+  tags: [ mysql ]
 
 - name: Install PyMySQL
   ansible.builtin.shell:
     cmd: python3 -m pip install PyMySQL
+  tags: [ mysql ]
 
 - name: Start mariadb
   ansible.builtin.service:
     name: mariadb
     state: started
+  tags: [ mysql ]
 
 - name: Waits for port 3306 (mysql)
   ansible.builtin.wait_for:
     port: 3306
     delay: 8
     state: started
-
+  tags: [ mysql ]
+  
 - name: secure mariadb
   become: yes
   ansible.builtin.expect:
@@ -61,7 +69,8 @@
   register: secure_mariadb
   failed_when: "'... Failed!' in secure_mariadb"
   when: "ansible_facts.packages.mariadb105 is undefined"
-  
+  tags: [ mysql ]
+
 - name: Creates database for WordPress
   ansible.builtin.mysql_db:
     name: "{{ mysql_db }}"
@@ -69,6 +78,7 @@
     login_user: root
     login_password: "{{ mysql_root_password }}"
   when: "ansible_facts.packages.mariadb105 is undefined"
+  tags: [ mysql ]
 
 - name: Create MySQL user for WordPress
   ansible.builtin.mysql_user:
@@ -79,7 +89,9 @@
     login_user: root
     login_password: "{{ mysql_root_password }}"
   when: "ansible_facts.packages.mariadb105 is undefined"
+  tags: [ mysql ]
 
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/mysql/handlers/main.yml
+  tags: [ mysql ]

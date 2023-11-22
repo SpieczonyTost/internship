@@ -1,12 +1,14 @@
 - name: Check if packages were collected successfully
   ansible.builtin.debug:
     var: ansible_facts.packages['nginx']
+  tags: [ nginx ]
 
 - name: Update repositories
   ansible.builtin.yum: 
     name: yum
     update_cache: yes
     state: latest
+  tags: [ nginx ]
 
 - name: Creating nginx.repo
   ansible.builtin.copy:
@@ -15,6 +17,7 @@
     owner: root
     group: root
     mode: 0644
+  tags: [ nginx ]
 
 - name: Install nginx
   ansible.builtin.yum:
@@ -22,7 +25,9 @@
     update_cache: yes
     state: latest
   when: "ansible_facts.packages['nginx'] is undefined"
+  tags: [ nginx ]
 
 - name: Include handlers
   ansible.builtin.include_tasks:
     file: roles/nginx/handlers/main.yml
+  tags: [ nginx ]
