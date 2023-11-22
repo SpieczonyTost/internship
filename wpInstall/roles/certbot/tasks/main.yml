@@ -30,12 +30,36 @@
     cmd: certbot --nginx --noninteractive --agree-tos --email "{{ wp_email }}" -d "{{ wp_url }}"
   tags: [ certbot ]
 
+- name: Install cron
+  ansible.builtin.dnf:
+    name: cronie
+    update_cache: yes
+    state: latest
+  when: "ansible_facts.packages.cronie is undefined"
+  tags: [ mysql ]
+
+- name: Create job for cron
+  ansible.builtin.cron:
+    name: crontab
+    minute: 0
+    hour: 18
+    user: root
+    job: certbot renew --post-hook "systemctl reload nginx"
+  tags: [ certbot ]
+
+- name: restart cron
+  ansible.builtin.service:
+    name: cron
+    state: restarted
+  tags: [ certbot ]
+
 - name: restart nginx
   ansible.builtin.service:
     name: nginx
     state: restarted
   tags: [ certbot ]
 
+# 43 6 * * * certbot renew --post-hook "systemctl reload nginx"
 # sudo yum install pip3
 # pip3 install certbot certbot-nginx
 # pip3 install cryptography==41.0.5
