@@ -8,7 +8,6 @@
     path: "/etc/apt/sources.list.d/nginx.list"
   register: nginx_list_stat
 
-
 - name: Insert file with repositories
   ansible.builtin.copy:
     src: nginx.list
