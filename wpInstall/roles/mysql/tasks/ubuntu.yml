@@ -7,6 +7,11 @@
     msg: "{{ ansible_facts.packages['mysql-server'] | length }} versions of mysql-server are installed!"
   when: "'mysql-server' in ansible_facts.packages"
 
+- name: Ensure the universe repo is added
+  ansible.builtin.apt_repository:
+    repo: deb http://archive.canonical.com/ubuntu "{{codename.stdout}}" partner
+    state: present
+
 - name: Update repositories
   ansible.builtin.apt:
     update_cache: yes
@@ -24,11 +29,6 @@
 - name: Debug
   ansible.builtin.debug:
     var: codename.stdout
-
-- name: Ensure the universe repo is added
-  ansible.builtin.apt_repository:
-    repo: deb http://archive.canonical.com/ubuntu "{{codename.stdout}}" partner
-    state: present
 
 - name: Activation magic
   ansible.builtin.expect:
