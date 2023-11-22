@@ -1,36 +1,41 @@
-# SELF SIGNED CONFIG 
-#
-# - name: Generate an OpenSSL private key with a different size (2048 bits)
-#   community.crypto.openssl_privatekey:
-#     path: /etc/ssl/private/nginx-selfsigned.key
-#     size: 2048
-
-# - name: Generate a Self Signed OpenSSL certificate
-#   community.crypto.x509_certificate:
-#     path: /etc/ssl/certs/nginx-selfsigned.crt
-#     privatekey_path: /etc/ssl/private/nginx-selfsigned.key
-#     provider: selfsigned
-
-# - name: Generate Diffie-Hellman parameters with the default size (4096 bits)
-#   community.crypto.openssl_dhparam:
-#     path: /etc/ssl/certs/dhparam.pem
-#     size: 2048
-
-# - name: Create files in snippets (ssl cerf paths)
-#   ansible.builtin.copy:
-#     src: self-signed.conf
-#     dest: /etc/nginx/snippets/self-signed.conf
-
-# - name: Create files in snippets (ssl dhparam)
-#   ansible.builtin.copy:
-#     src: ssl-params.conf
-#     dest: /etc/nginx/snippets/ssl-params.conf
-
 # LET'S ENCRYPT CONFIG
 
-sudo apt install python3 python3-venv libaugeas0
-sudo python3 -m venv /opt/certbot/
-sudo /opt/certbot/bin/pip install --upgrade pip
-sudo /opt/certbot/bin/pip install certbot certbot-nginx
+- name: Install prerequisites
+  ansible.builtin.package:
+    name: "{{item}}"
+    state: present
+  loop: [python3, python3-venv, libaugeas0]
 
-install python-apt?????????? - wszedzie + zmien ochai_packages na packages
+- name: Create a venv
+  ansible.builtin.shell: "python3 -m venv /opt/certbot/"
+
+- name: Update pip in venv
+  ansible.builtin.shell: "/opt/certbot/bin/pip install --upgrade pip"
+
+- name: Install certbot in venv with pip
+  ansible.builtin.shell: "/opt/certbot/bin/pip install certbot certbot-nginx"
+
+- name: Make a symlink / start certbot at start
+  ansible.builtin.shell: "ln -s /opt/certbot/bin/certbot /usr/bin/certbot"
+
+# now we create a certificate
+
+- name: Generate a cert for each domain separately
+  ansible.builtin.shell: certbot --nginx --non-interactive --agree-tos -m mikolaj.zasko890290@google.com -d "{{item}}"
+  loop: "{{certbot_domain_list}}"
+
+- name: Add a daily cron job
+  ansible.builtin.cron:
+    name: "Daily renewal check"
+    minute: "1"
+    hour: "0"
+    day: "*"
+    month: "*"
+    weekday: "*"
+    job: "cd / ; certbot renew --quiet"
+    user: root
+
+- name: Restart cron service
+  ansible.builtin.systemd:
+    state: restarted
+    name: cron

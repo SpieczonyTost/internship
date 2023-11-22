@@ -13,13 +13,15 @@ mysql_db_prefix: wp_
 
 
 # Wordpress Settings
-wp_url: "192.168.50.100"      # These addresses are used not only in WP,
-wp_url1: "192.168.50.101"     # the config of prometheus/nginx also depends on it (be carefull when changing it)
-wp_title: "amazon.com"        # and make sure if they are domain names that they can be seen from the internet
-wp_title1: "ubuntu.com"
+# wp_url: ""                          # These addresses are used not only in WP,
+wp_url1: "www.mikolaj.dev.zdt.io"     # the config of prometheus/nginx also depends on it (be carefull when changing it)              
+wp_title1: "mikolaj.com"              # and make sure if they are domain names that they can be seen from the internet
 wp_admin: "admin"
 wp_password: "1234"
 wp_email: "zrobione.com@zdt.io"
+
+# Certbot
+certbot_domain_list: [www.mikolaj.dev.zdt.io, mikolaj.dev.zdt.io]
 
 # Grafana for Ubuntu
 ubuntu_grafana_url: "http://192.168.50.103:3000"
@@ -55,4 +57,3 @@ backup_hashed_password: "$6$vr/4bYgE.AMhe24Z$BVzlmeOAvGaI376SML.xVrwXbfVSWe2ZF0k
 # !!! important, if you change password for user backup (^), 
 # you will have to generate it's hashed version and insert it above
 #
-
