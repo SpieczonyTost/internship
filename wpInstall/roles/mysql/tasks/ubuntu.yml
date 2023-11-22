@@ -14,8 +14,21 @@
 
 - name: Install mysql-server
   ansible.builtin.package:
-    name: "mysql-server=8.0.35-0ubuntu0.20.04.1"
+    name: "mysql-server"
   when: "not 'mysql-server' in ansible_facts.packages"
+
+- name: Check the codename
+  ansible.builtin.shell: "lsb_release -sc"
+  register: codename
+
+- name: Debug
+  ansible.builtin.debug:
+    var: "{{codename}}"
+
+- name: Ensure the universe repo is added
+  ansible.builtin.apt_repository:
+    repo: deb http://archive.canonical.com/ubuntu hardy partner
+    state: present
 
 - name: Activation magic
   ansible.builtin.expect:

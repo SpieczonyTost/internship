@@ -3,23 +3,23 @@
     msg: "{{ ansible_facts.packages['nginx'] | length }} versions of nginx are installed!"
   when: "'nginx' in ansible_facts.packages"
 
-- name: Check if file with repositories is present at /etc/apt/sources.list.d/nginx.list
-  stat:
-    path: "/etc/apt/sources.list.d/nginx.list"
-  register: nginx_list_stat
+# - name: Check if file with repositories is present at /etc/apt/sources.list.d/nginx.list
+#   stat:
+#     path: "/etc/apt/sources.list.d/nginx.list"
+#   register: nginx_list_stat
 
-- name: Insert file with repositories
-  ansible.builtin.copy:
-    src: nginx.list
-    dest: /etc/apt/sources.list.d/nginx.list
-    owner: root
-    group: root
-    mode: '0644'
-  when: "nginx_list_stat.stat.exists == false"
+# - name: Insert file with repositories
+#   ansible.builtin.copy:
+#     src: nginx.list
+#     dest: /etc/apt/sources.list.d/nginx.list
+#     owner: root
+#     group: root
+#     mode: '0644'
+#   when: "nginx_list_stat.stat.exists == false"
 
-- name: Add a key
-  ansible.builtin.shell: "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62"
-  when: "nginx_list_stat.stat.exists == false"
+# - name: Add a key
+#   ansible.builtin.shell: "sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62"
+#   when: "nginx_list_stat.stat.exists == false"
 
 - name: Update repositories
   ansible.builtin.shell: apt-get update
@@ -27,13 +27,8 @@
 
 - name: Install nginx
   ansible.builtin.package:
-    name: nginx=1.24.0-1~focal 
+    name: nginx
   when: "not 'nginx' in ansible_facts.packages"
-
-- name: Install nginx-geoip module
-  ansible.builtin.package:
-    name: nginx-module-geoip
-  when: "not 'nginx-module-geoip' in ansible_facts.packages"  
 
 # If installation of nginx fails comment these names ^^^ (and their contents) :
 # - Check if file with repositories is present at ...
