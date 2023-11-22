@@ -76,7 +76,9 @@
   when: "wp_config_stat.stat.exists == false"
 
 - name: Install Wordpress
-  ansible.builtin.shell: "wp core install --url={{wp_url1}} --title={{wp_title1}} --admin_user={{wp_admin}} --admin_password={{wp_password}} --admin_email={{wp_email}} --allow-root --path='/var/www/html'"
+  ansible.builtin.shell: "sudo -u www-data wp core install --url={{wp_url1}} --title={{wp_title1}} --admin_user={{wp_admin}} --admin_password={{wp_password}} --admin_email={{wp_email}}"
+  args: 
+    chdir: "/var/www/html"
   when: "wp_config_stat.stat.exists == false"
   
 - name: Change privilages for the wp-config.php file

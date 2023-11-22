@@ -18,7 +18,7 @@
   when: "not 'mysql-server' in ansible_facts.packages"
 
 - name: Install mysql-server
-  ansible.builtin.package:
+  ansible.builtin.apt:
     name: "mysql-server"
   when: "not 'mysql-server' in ansible_facts.packages"
 

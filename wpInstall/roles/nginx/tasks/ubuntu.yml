@@ -64,7 +64,7 @@
     owner: root
     group: root
     mode: '0644'
-  when: "sites_available_stat.stat.exists == false"
+  # when: "sites_available_stat.stat.exists == false"
 
 - name: Overrite the fastcgi.conf
   ansible.builtin.copy:
@@ -73,7 +73,7 @@
     owner: root
     group: root
     mode: '0644'
-  when: "sites_available_stat.stat.exists == false"
+  # when: "sites_available_stat.stat.exists == false"
 
 - name: Create symlink
   ansible.builtin.shell: "ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default"
@@ -86,7 +86,7 @@
     owner: root
     group: root
     mode: '0644'
-  when: "not 'nginx' in ansible_facts.packages"
+  # when: "not 'nginx' in ansible_facts.packages"
 
 - name: Overrite the nginx.conf
   ansible.builtin.copy:
@@ -95,7 +95,7 @@
     owner: root
     group: root
     mode: '0644'
-  when: "not 'nginx' in ansible_facts.packages"
+  # when: "not 'nginx' in ansible_facts.packages"
 
 - name: Restart nginx
   ansible.builtin.systemd:
