@@ -3,7 +3,7 @@
 
 boxes = [
    {
-       :name => "ubuntuCloud",
+       :name => "ubuntuSAS",
        :eth1 => "192.168.50.110",
        :mem => "2048",
        :cpu => "2",
